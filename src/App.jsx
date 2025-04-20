@@ -5,7 +5,6 @@ import React, {
   useMemo,
   useCallback,
   lazy,
-  Suspense,
 } from "react";
 import MovieCard from "./Components/MovieCard";
 import { FaChevronLeft } from "react-icons/fa";
@@ -18,10 +17,7 @@ import {
 } from "./services/movie_api";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-
-// Lazy load the Movie_Sugesstions component
-const Movie_Sugesstions = lazy(() => import("./Components/Movie_Sugesstions"));
+import { useNavigate } from "react-router-dom";
 
 // Memoized MovieCard component
 const MemoizedMovieCard = React.memo(MovieCard);
@@ -38,6 +34,7 @@ function App() {
   const trending_Movie_crousel = useRef(null);
   const now_Playing_crousel = useRef(null);
   const popular_Show_crousel = useRef(null);
+  const navigate = useNavigate();
 
   // Memoized animation variants
   const containerVariants = useMemo(
@@ -141,6 +138,9 @@ function App() {
       mounted = false;
     };
   }, []);
+  useEffect(() => {
+    isFocus ? navigate("/search") : navigate("/");
+  }, [isFocus]);
 
   //*Functions
   const handleclick = useCallback((direction, e) => {
@@ -216,11 +216,7 @@ function App() {
   return (
     <ErrorBoundary>
       <div className="">
-        {isFocus ? (
-          <Suspense fallback={<div>Loading Suggested Movies...</div>}>
-            <Movie_Sugesstions />
-          </Suspense>
-        ) : (
+        {
           <>
             <motion.div
               className="mt-5"
@@ -425,7 +421,7 @@ function App() {
               </div>
             </motion.div>
           </>
-        )}
+        }
       </div>
     </ErrorBoundary>
   );

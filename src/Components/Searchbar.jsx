@@ -4,6 +4,8 @@ import { React, useState, useRef, useEffect, useCallback } from "react";
 import { useSearch } from "../Context/Searchcontext";
 import { getSearchResult, getGenres } from "../services/movie_api";
 import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
+
 const Searchbar = () => {
   //*States & Refrences
   const [showFilters, setShowFilters] = useState(false);
@@ -20,6 +22,8 @@ const Searchbar = () => {
   const Search_Ref = useRef(null);
   const filterDivRef = useRef(null);
   const filterBtn = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   //*Functionss
   const Debounce = (func, delay) => {
@@ -47,7 +51,13 @@ const Searchbar = () => {
     }
   };
   const handleClick = () => {
-    !isFocus ? Search_Ref.current?.focus() : setIsFocus(false);
+    if (!isFocus) {
+      Search_Ref.current?.focus();
+      navigate("/search");
+    } else {
+      setIsFocus(false);
+      navigate("/");
+    }
   };
   const handleFilter = () => {
     setShowFilters(!showFilters);
@@ -103,7 +113,7 @@ const Searchbar = () => {
           onClick={handleClick}
           className="sm:text-xl text-sm cursor-pointer"
         >
-          {isFocus ? (
+          {location.pathname === "/search" ? (
             <IoArrowBack onClick={() => setSearchItem("")} />
           ) : (
             <FaSearch />

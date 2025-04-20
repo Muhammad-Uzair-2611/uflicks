@@ -60,10 +60,6 @@ const Movie_Sugesstions = () => {
     setVisibleCardCount(10);
   }, [searchResult]);
 
-  // useEffect(() => {
-  //   console.log(currentMovies)
-  // }, [currentMovies]);
-
   useEffect(() => {
     if (visibleCardCount >= currentMovies.length) return; // Stop if all movies are rendered
 
@@ -79,20 +75,18 @@ const Movie_Sugesstions = () => {
       }
     });
 
-    // Observe the last rendered card
     if (lastRenderedCard.current && firstRenderedCard.current) {
       observer.observe(lastRenderedCard.current);
       observer.observe(firstRenderedCard.current);
     }
 
-    // Cleanup the observer when the component is unmounted or updated
     return () => {
       if (lastRenderedCard.current) {
         observer.unobserve(lastRenderedCard.current);
         observer.unobserve(firstRenderedCard.current);
       }
     };
-  }, [visibleCardCount, currentMovies.length]); // Dependencies to trigger effect when visibleCardCount or currentMovies change
+  }, [visibleCardCount, currentMovies.length]);
 
   //* Animation variants
   const containerVariants = {

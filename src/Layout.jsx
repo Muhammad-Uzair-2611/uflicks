@@ -17,7 +17,7 @@ const Layout = () => {
     <div className="container mx-auto">
       <ScrollToTop />
       {!hideSearNav && <NavBar />}
-      {!is404 || (!hideSearNav && <Searchbar />)}
+      {is404 || !hideSearNav && <Searchbar />}
       <MoviesInfoProvider>
         <Outlet />
       </MoviesInfoProvider>

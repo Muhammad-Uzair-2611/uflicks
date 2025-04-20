@@ -1,11 +1,20 @@
 import React, { useEffect } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { getMoviebyID } from "../services/movie_api";
+import { useMovieInfo } from "../Context/MovieInfoContext";
+import { useNavigate } from "react-router-dom";
 
 const MovieInfo = () => {
+  const { isAllowed, movieId } = useMovieInfo();
+  const navigate = useNavigate();
+
   useEffect(() => {
     async function getMovieById() {
-      await getMoviebyID(1197306);
+      console.log(movieId + "  " + isAllowed);
+
+      const response = await getMoviebyID(movieId);
+      !isAllowed && navigate("/");
+      console.log(response);
     }
     getMovieById();
   }, []);
@@ -16,7 +25,7 @@ const MovieInfo = () => {
         <img className="w-full h-full" src="./a.png" alt="" />
       </div>
       <div className="h-50  px-3 py-2">
-        <span className="text-4xl cursor-pointer">
+        <span onClick={() => navigate("")} className="text-4xl cursor-pointer">
           <IoArrowBack />
         </span>
       </div>

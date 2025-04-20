@@ -8,6 +8,7 @@ import { SearchProvider } from "./Context/Searchcontext.jsx";
 import PageNotFound from "./Components/PageNotFound.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import MovieInfo from "./Components/MovieInfo.jsx";
+import Movie_Sugesstions from "./Components/Movie_Sugesstions.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -18,11 +19,16 @@ const routes = createBrowserRouter([
       {
         path: "",
         element: <App />,
+        handle: { hide_Search_n_navbar: false },
       },
       {
         path: "movieInfo",
         element: <MovieInfo />,
         handle: { hide_Search_n_navbar: true },
+      },
+      {
+        path: "search",
+        element: <Movie_Sugesstions />,
       },
       {
         path: "*",
@@ -32,7 +38,6 @@ const routes = createBrowserRouter([
     ],
   },
 ]);
-
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Failed to find the root element");

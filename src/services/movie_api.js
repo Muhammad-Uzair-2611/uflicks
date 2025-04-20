@@ -13,7 +13,7 @@ const SearchShow_URL = `search/tv?api_key=${API_KEY}&query=`;
 const genres_URL = `genre/movie/list?api_key=${API_KEY}`;
 const filteredMovies_URL = `discover/movie?api_key=${API_KEY}&with_genres=`;
 
-// Custom error handler
+//* Custom error handler
 const handleApiError = (error) => {
   if (error.response) {
     console.error("API Error Response:", error.response.data);
@@ -30,7 +30,22 @@ const handleApiError = (error) => {
     throw new Error("An unexpected error occurred");
   }
 };
+//*Number Formatter
+function formatNumber(num) {
+  if (num >= 1_000_000_000_000) {
+    return (num / 1_000_000_000_000).toFixed(1).replace(/\.0$/, "") + "T";
+  } else if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+  } else if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  } else if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+  } else {
+    return num.toString();
+  }
+}
 
+//*Requests
 export const getTrendingMovies = async () => {
   try {
     const fetch = await axios.get(`${BASE_URL}${trending_URL}`);
@@ -198,7 +213,36 @@ export const getFliteredMovies = async (genre) => {
     handleApiError(error);
   }
 };
+
 export const getMoviebyID = async (movie_id) => {
-  const fetch = await axios.get(`${BASE_URL}movie/${movie_id}?api_key=${API_KEY}`);
-  console.log(fetch)
+  try {
+    const fetch = await axios.get(
+      `${BASE_URL}movie/${movie_id}?api_key=${API_KEY}`
+    );
+    const response = fetch.data;
+    const movieinfo = {
+      title: response.original_title,
+      tagline: response.tagline,
+      genres: response.genres.map((genre) =>
+        genre.name == "Science Fiction" ? "Sci-Fi" : genre.name
+      ),
+      banner: response.backdrop_path,
+      poster: response.poster_path,
+      budget: formatNumber(response.budget),
+      ticket: response.homepage,
+      overview: response.overview,
+      productionCompanies: response.production_companies.map((c) => c.name),
+      release: response.release_date,
+      revenue: formatNumber(response.revenue),
+      runtime: response.runtime,
+      spoken_languages: response.spoken_languages.map(
+        (lang) => lang.english_name
+      ),
+      status: response.status,
+      rating: response.vote_average,
+    };
+    return movieinfo;
+  } catch (error) {
+    handleApiError(error);
+  }
 };
