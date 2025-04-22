@@ -1,31 +1,39 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
-import { getMoviebyID } from "../services/movie_api";
+import { getMoviebyID, getImageURL } from "../services/movie_api";
 import { useMovieInfo } from "../Context/MovieInfoContext";
 import { useNavigate } from "react-router-dom";
 
 const MovieInfo = () => {
   const { isAllowed, movieId } = useMovieInfo();
+  const [movieInfo, setMovieInfo] = useState({});
+  const [ImageURL, setImageURL] = useState();
+
   const navigate = useNavigate();
 
   useEffect(() => {
     async function getMovieById() {
-      console.log(movieId + "  " + isAllowed);
-
-      const response = await getMoviebyID(movieId);
       !isAllowed && navigate("/");
-      console.log(response);
+      const response = await getMoviebyID(movieId);
+      const imageURl = await getImageURL();
+      setImageURL(imageURl);
+      setMovieInfo(response);
+      JSON.stringify(sessionStorage.setItem("isAllowed", isAllowed));
     }
     getMovieById();
   }, []);
 
   return (
     <div className="relative">
-      <div className="backImage w-full h-90 absolute -z-10">
-        <img className="w-full h-full" src="./a.png" alt="" />
+      <div className="backImage w-fit h-fit blur-xs absolute -z-10">
+        <img
+          className="w-full h-full"
+          src={`${ImageURL?.url}${ImageURL?.banner_sizes[3]}${movieInfo.banner}`}
+          alt=""
+        />
       </div>
       <div className="h-50  px-3 py-2">
-        <span onClick={() => navigate("")} className="text-4xl cursor-pointer">
+        <span onClick={() => navigate("/")} className="text-4xl cursor-pointer">
           <IoArrowBack />
         </span>
       </div>
@@ -75,43 +83,6 @@ const MovieInfo = () => {
           <div>Type: Movie</div>
           <div>Length: 180 Minutes</div>
           <div>Rating: 7.3 on IMBD</div>
-        </div>
-      </div>
-      <div className="text-3xl px-13 font-bold tracking-wider py-5">Cast</div>
-      <div
-        className="casting py-5 pl-10 grid grid-cols-4 gap-y-10 gap-x-8 [&>div>div]:w-40 
-        [&>div>div]:h-40 [&>div>div]:rounded-full [&>div>div]:overflow-hidden [&>div>div>img]:w-full 
-        [&>div>div>img]:h-full"
-      >
-        <div>
-          <div>
-            <img src="./Capture.PNG" alt="" />
-          </div>
-          <span>Name</span>
-        </div>
-        <div>
-          <div>
-            <img src="./Capture.PNG" alt="" />
-          </div>
-          <span>Name</span>
-        </div>
-        <div>
-          <div>
-            <img src="./Capture.PNG" alt="" />
-          </div>
-          <span>Name</span>
-        </div>
-        <div>
-          <div>
-            <img src="./Capture.PNG" alt="" />
-          </div>
-          <span>Name</span>
-        </div>
-        <div>
-          <div>
-            <img src="./Capture.PNG" alt="" />
-          </div>
-          <span>Name</span>
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import React from "react";
 import NavBar from "./Components/NavBar";
-import Searchbar from "./Components/Searchbar";
 import { Outlet, useMatches } from "react-router-dom";
 import ScrollToTop from "./Components/ScrollToTop";
 import { MoviesInfoProvider } from "./Context/MovieInfoContext";
@@ -17,7 +16,6 @@ const Layout = () => {
     <div className="container mx-auto">
       <ScrollToTop />
       {!hideSearNav && <NavBar />}
-      {is404 || !hideSearNav && <Searchbar />}
       <MoviesInfoProvider>
         <Outlet />
       </MoviesInfoProvider>

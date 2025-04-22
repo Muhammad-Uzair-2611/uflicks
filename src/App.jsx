@@ -4,22 +4,29 @@ import React, {
   useState,
   useMemo,
   useCallback,
-  lazy,
 } from "react";
 import MovieCard from "./Components/MovieCard";
-import { FaChevronLeft } from "react-icons/fa";
+import { FaChevronLeft, FaSkull, FaMap } from "react-icons/fa";
+import { HiHome } from "react-icons/hi2";
+import { MdMovie } from "react-icons/md";
+import { PiFilmReel } from "react-icons/pi";
+import { GiCrossedSwords, GiMonoWheelRobot } from "react-icons/gi";
+import { LuTv } from "react-icons/lu";
+import { FaMasksTheater } from "react-icons/fa6";
 import { useSearch } from "./Context/Searchcontext";
+import { useMovieInfo } from "./Context/MovieInfoContext";
+import ImageCrousel from "./Components/ImageCrousel";
 import {
   getTrendingMovies,
   getTNowPlayingMovies,
   getPopularShow,
   getImageURL,
+  getTopRatedMovies,
 } from "./services/movie_api";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-// Memoized MovieCard component
 const MemoizedMovieCard = React.memo(MovieCard);
 
 function App() {
@@ -31,6 +38,7 @@ function App() {
   const [imageURL, setImageURL] = useState();
   const [error, setError] = useState(null);
   const { isFocus } = useSearch();
+  const { isAllowed, setIsAllowed } = useMovieInfo();
   const trending_Movie_crousel = useRef(null);
   const now_Playing_crousel = useRef(null);
   const popular_Show_crousel = useRef(null);
@@ -107,6 +115,7 @@ function App() {
     let mounted = true;
     async function fetchData() {
       try {
+        setIsAllowed(false);
         setLoading(true);
         setError(null);
         const [trendingMovies, nowPlaying, popularShow, ImageURL] =
@@ -120,6 +129,7 @@ function App() {
           set_Trendng_Movies(trendingMovies);
           set_Now_Playing(nowPlaying);
           set_Popular_TV_Show(popularShow);
+
           setImageURL(ImageURL);
         }
       } catch (err) {
@@ -139,7 +149,14 @@ function App() {
     };
   }, []);
   useEffect(() => {
-    isFocus ? navigate("/search") : navigate("/");
+    JSON.stringify(sessionStorage.setItem("isAllowed", isAllowed));
+  }, [isAllowed]);
+
+  useEffect(() => {
+    if (isFocus) navigate("/search");
+    else {
+      navigate("/");
+    }
   }, [isFocus]);
 
   //*Functions
@@ -218,7 +235,56 @@ function App() {
       <div className="">
         {
           <>
-            <motion.div
+            <div className="gap-x-1 w-full h-fit flex py-5 px-4">
+              <div>
+                <ul
+                  className=" space-y-5 w-40 [&>li]:flex [&>li]:px-2 [&>li]:pt-1 
+                  [&>li]:cursor-pointer [&>li]:rounded-md [&>li]:gap-x-2 [&>li]:text-lg 
+                  [&>li>span]:text-[17px] [&>li]:hover:bg-neutral-600"
+                >
+                  <li>
+                    <HiHome />
+                    <span>Home</span>
+                  </li>
+                  <li>
+                    <MdMovie />
+                    <span>Movies</span>
+                  </li>
+                  <li>
+                    <LuTv />
+                    <span>TV Series</span>
+                  </li>
+                  <li>
+                    <PiFilmReel />
+                    <span>Animation</span>
+                  </li>
+                  <li>
+                    <FaSkull />
+                    <span>Horror</span>
+                  </li>
+                  <li>
+                    <GiCrossedSwords />
+                    <span>Action</span>
+                  </li>
+                  <li>
+                    <FaMasksTheater />
+                    <span>Drama</span>
+                  </li>
+                  <li>
+                    <FaMap />
+                    <span>Adventure</span>
+                  </li>
+                  <li>
+                    <GiMonoWheelRobot />
+                    <span>Sci-Fi</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="w-full">
+                <ImageCrousel />
+              </div>
+            </div>
+            {/* <motion.div
               className="mt-5"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -348,6 +414,7 @@ function App() {
                         size={imageURL.sizes[1]}
                         poster={movie.poster}
                         title={movie.title}
+                        id={movie.id}
                       />
                     </motion.div>
                   ))}
@@ -414,12 +481,13 @@ function App() {
                         size={imageURL.sizes[1]}
                         poster={movie.poster}
                         title={movie.title}
+                        id={movie.id}
                       />
                     </motion.div>
                   ))}
                 </AnimatePresence>
               </div>
-            </motion.div>
+            </motion.div> */}
           </>
         }
       </div>

@@ -50,7 +50,6 @@ export const getTrendingMovies = async () => {
   try {
     const fetch = await axios.get(`${BASE_URL}${trending_URL}`);
     const response = fetch.data.results;
-
     return response
       .filter((movie) => movie.poster_path != null && movie.overview !== "")
       .map((movie) => ({
@@ -84,17 +83,17 @@ export const getTNowPlayingMovies = async () => {
   }
 };
 
-export const topRatedMovies = async () => {
+export const getTopRatedMovies = async () => {
   try {
     const fetch = await axios.get(`${BASE_URL}${topRatedMovies_URL}`);
     const response = fetch.data.results;
-
     return response
-      .filter((movie) => movie.poster_path != null && movie.overview !== "")
+      .filter((movie) => movie.backdrop_path != null)
       .map((movie) => ({
         id: movie.id,
         title: movie.title,
         release_date: movie.release_date,
+        banner: movie.backdrop_path,
         poster: movie.poster_path,
         overview: movie.overview,
       }));
@@ -171,6 +170,7 @@ export const getImageURL = async () => {
     return {
       url: fetch.data.images.secure_base_url,
       sizes: fetch.data.images.poster_sizes,
+      banner_sizes: fetch.data.images.backdrop_sizes,
     };
   } catch (error) {
     handleApiError(error);

@@ -1,13 +1,16 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 
 const movieInfoContext = createContext();
 
 export function MoviesInfoProvider({ children }) {
   const [movieId, setMovieId] = useState(sessionStorage.getItem("movieID"));
-  const [isAllowed, setIsAllowed] = useState(
-    sessionStorage.getItem("isAllowed", false)
-  );
+  let isAllow = JSON.parse(sessionStorage.getItem("isAllowed"));
+  const [isAllowed, setIsAllowed] = useState(isAllow ? isAllow : false);
 
+  //*Effects
+  useEffect(() => {
+    sessionStorage.setItem("movieID", movieId);
+  }, [movieId]);
   return (
     <movieInfoContext.Provider
       value={{ movieId, setMovieId, isAllowed, setIsAllowed }}

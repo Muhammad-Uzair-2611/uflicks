@@ -3,20 +3,13 @@ import { useMovieInfo } from "../Context/MovieInfoContext";
 import { useNavigate } from "react-router-dom";
 const MovieCard = (props) => {
   //*Custom Hook
-  const { setIsAllowed, setMovieId, isAllowed, movieId } = useMovieInfo();
+  const { setIsAllowed, setMovieId, movieId } = useMovieInfo();
   const navigate = useNavigate();
-
-  //*Effects
-  useEffect(() => {
-    sessionStorage.setItem("isAllowed", isAllowed);
-  }, [isAllowed]);
-  useEffect(() => {
-    sessionStorage.setItem("movieID", movieId);
-  }, [movieId]);
 
   //*Functions
   const handleClick = (e) => {
     setIsAllowed(true);
+    console.log(e.currentTarget.id)
     setMovieId(e.currentTarget.id);
     navigate("/movieinfo");
   };

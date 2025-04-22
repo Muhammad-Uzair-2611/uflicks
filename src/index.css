@@ -1,10 +1,42 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Acumin Pro";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Acumin Pro"), url("/public/font/Acumin-RPro.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Acumin Pro Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Acumin Pro Italic"),
+    url("/public/font/Acumin-ItPro.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Acumin Pro Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Acumin Pro Bold"),
+    url("/public/font/Acumin-BdPro.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Acumin Pro Bold Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Acumin Pro Bold Italic"),
+    url("/public/font/Acumin-BdItPro.woff") format("woff");
+}
+
 /* Critical CSS */
 body {
-  background-color: #0a0a0a;
+  background-color: #181a1b;
   color: white;
   margin: 0;
+  font-family: "Acumin Pro";
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -28,8 +60,7 @@ body {
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
-  
-  }
+}
 
 /* Optimize image rendering */
 img {

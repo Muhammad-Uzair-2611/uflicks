@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getImageURL, getFliteredMovies } from "../services/movie_api";
 import { useSearch } from "../Context/Searchcontext";
+import { useMovieInfo } from "../Context/MovieInfoContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const Movie_Sugesstions = () => {
   //*States & Refrences
@@ -10,14 +12,16 @@ const Movie_Sugesstions = () => {
   const [visibleCardCount, setVisibleCardCount] = useState(10);
   const [error, setError] = useState(null);
   const { searchItem, searchResult, filter } = useSearch();
+  const { setIsAllowed, isAllowed, setMovieId } = useMovieInfo();
   const [currentMovies, setCurrentMovies] = useState([]);
   const lastRenderedCard = useRef(null);
-  const firstRenderedCard = useRef(null);
+  const navigate = useNavigate();
 
   //*Effects
   useEffect(() => {
     async function fetchData() {
       try {
+        setIsAllowed(false);
         setLoading(true);
         setError(null);
         const imageURl = await getImageURL();
@@ -25,7 +29,7 @@ const Movie_Sugesstions = () => {
         const movies = await getFliteredMovies(
           filter.id ? filter.id : "28,12,878"
         );
-        console.log(movies);
+
         setCurrentMovies(movies);
       } catch (err) {
         setError(err.message);
@@ -56,37 +60,51 @@ const Movie_Sugesstions = () => {
   }, [filter]);
 
   useEffect(() => {
+    if (searchResult === "") {
+      async function fetch() {
+        const movies = await getFliteredMovies(
+          filter.id ? filter.id : "28,12,878"
+        );
+
+        setCurrentMovies(movies);
+      }
+      fetch();
+    }
     setCurrentMovies(searchResult);
+
     setVisibleCardCount(10);
   }, [searchResult]);
 
   useEffect(() => {
-    if (visibleCardCount >= currentMovies.length) return; // Stop if all movies are rendered
-
+    if (visibleCardCount >= currentMovies.length) return;
     const observer = new IntersectionObserver((entries) => {
       const entry1 = entries[0];
-      const entry2 = entries[1];
+
       if (entry1.isIntersecting) {
-        // When the last card is in view, load more
         setVisibleCardCount((prev) => prev + 10);
-      }
-      if (entry2.isIntersecting) {
-        setVisibleCardCount(10);
       }
     });
 
-    if (lastRenderedCard.current && firstRenderedCard.current) {
+    if (lastRenderedCard.current) {
       observer.observe(lastRenderedCard.current);
-      observer.observe(firstRenderedCard.current);
     }
 
     return () => {
       if (lastRenderedCard.current) {
         observer.unobserve(lastRenderedCard.current);
-        observer.unobserve(firstRenderedCard.current);
       }
     };
   }, [visibleCardCount, currentMovies.length]);
+  useEffect(() => {
+    JSON.stringify(sessionStorage.setItem("isAllowed", isAllowed));
+  }, [isAllowed]);
+
+  //*Functions
+  const handleClick = (e) => {
+    setIsAllowed(true);
+    setMovieId(e.currentTarget.id);
+    navigate("/movieinfo");
+  };
 
   //* Animation variants
   const containerVariants = {
@@ -204,17 +222,13 @@ const Movie_Sugesstions = () => {
   return (
     <div className="mt-10 ">
       <motion.div
-        className="sm:text-3xl text-xl w-fit sm:mb-5 mb-3 sm:px-4 px-2 font-semibold"
+        className="sm:text-2xl text-xl w-fit sm:mb-5 mb-3 sm:px-4 px-2 font-semibold"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         {searchItem === ""
-          ? `${
-              filter.name
-                ? `${filter.name}: ${currentMovies.length}`
-                : `Discover: ${currentMovies.length}`
-            }`
+          ? `${filter.name ? `${filter.name}` : `Discover`}`
           : `Search Results: ${searchResult.length}`}
       </motion.div>
       <motion.div
@@ -231,19 +245,15 @@ const Movie_Sugesstions = () => {
               movie.poster != null && movie.overview !== "" ? (
                 <motion.div
                   key={movie.id}
-                  className="sm:bg-neutral-900 bg-none sm:w-full w-fit flex sm:mb-3 mb-0 sm:py-2 p-0 sm:px-3 sm:gap-x-3 rounded-lg"
-                  ref={
-                    index === visibleCardCount - 1
-                      ? lastRenderedCard
-                      : null || index === 0
-                      ? firstRenderedCard
-                      : null
-                  }
+                  id={movie.id}
+                  onClick={handleClick}
+                  className="sm:bg-neutral-900 bg-none sm:w-full w-fit flex sm:mb-3 mb-0 sm:py-2 p-0 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer"
+                  ref={index === visibleCardCount - 1 ? lastRenderedCard : null}
                   variants={itemVariants}
                   whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
                   exit={{ opacity: 0, scale: 0.8 }}
                 >
-                  <div className="md:min-w-30 md:w-30 md:h-45 sm:min-w-28 sm:w-28 sm:h-40 w-25 h-37 overflow-hidden rounded-lg cursor-pointer bg-no-repeat bg-cover shadow-sm shadow-gray-500">
+                  <div className="md:min-w-30 md:w-30 md:h-45 sm:min-w-28 sm:w-28 sm:h-40 w-25 h-37 overflow-hidden rounded-lg bg-no-repeat bg-cover shadow-sm shadow-gray-500">
                     <img
                       loading="lazy"
                       src={`${ImageURL.url}${ImageURL.sizes[1]}${movie.poster}`}
