@@ -18,10 +18,10 @@ import { useMovieInfo } from "./Context/MovieInfoContext";
 import ImageCrousel from "./Components/ImageCrousel";
 import {
   getTrendingMovies,
-  getTNowPlayingMovies,
+  getNowPlayingMovies,
   getPopularShow,
   getImageURL,
-  getTopRatedMovies,
+  getWarMovies,
 } from "./services/movie_api";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,6 +34,7 @@ function App() {
   const [trendng_Movies, set_Trendng_Movies] = useState([]);
   const [now_Playing, set_Now_Playing] = useState([]);
   const [popular_TV_Show, set_Popular_TV_Show] = useState([]);
+  const [war_movies, set_War_Movies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [imageURL, setImageURL] = useState();
   const [error, setError] = useState(null);
@@ -41,7 +42,7 @@ function App() {
   const { isAllowed, setIsAllowed } = useMovieInfo();
   const trending_Movie_crousel = useRef(null);
   const now_Playing_crousel = useRef(null);
-  const popular_Show_crousel = useRef(null);
+  const upcoming_movies_crousel = useRef(null);
   const navigate = useNavigate();
 
   // Memoized animation variants
@@ -90,7 +91,7 @@ function App() {
     () => ({
       initial: {
         scale: 1,
-        opacity: 0.7,
+        opacity: 0.9,
       },
       hover: {
         scale: 1.1,
@@ -118,17 +119,19 @@ function App() {
         setIsAllowed(false);
         setLoading(true);
         setError(null);
-        const [trendingMovies, nowPlaying, popularShow, ImageURL] =
+        const [trendingMovies, nowPlaying, popularShow, ImageURL, upComping] =
           await Promise.all([
             getTrendingMovies(),
-            getTNowPlayingMovies(),
+            getNowPlayingMovies(),
             getPopularShow(),
             getImageURL(),
+            getWarMovies(),
           ]);
         if (mounted) {
           set_Trendng_Movies(trendingMovies);
           set_Now_Playing(nowPlaying);
           set_Popular_TV_Show(popularShow);
+          set_War_Movies(upComping);
 
           setImageURL(ImageURL);
         }
@@ -165,15 +168,15 @@ function App() {
       if (direction === "right") {
         if (e.currentTarget.id === "trending_right")
           trending_Movie_crousel.current.scrollLeft -= 200;
-        else if (e.currentTarget.id === "now_playing_right")
+        else if (e.currentTarget.id === "nowplaying_right")
           now_Playing_crousel.current.scrollLeft -= 200;
-        else popular_Show_crousel.current.scrollLeft -= 200;
+        else upcoming_movies_crousel.current.scrollLeft -= 200;
       } else if (direction === "left") {
         if (e.currentTarget.id === "trending_left")
           trending_Movie_crousel.current.scrollLeft += 200;
-        else if (e.currentTarget.id === "now_playing_left")
+        else if (e.currentTarget.id === "nowplaying_left")
           now_Playing_crousel.current.scrollLeft += 200;
-        else popular_Show_crousel.current.scrollLeft += 200;
+        else upcoming_movies_crousel.current.scrollLeft += 200;
       }
     } catch (err) {
       console.error("Error handling click:", err);
@@ -236,9 +239,9 @@ function App() {
         {
           <>
             <div className="gap-x-1 w-full h-fit flex py-5 px-4">
-              <div>
+              <div className="md:block hidden">
                 <ul
-                  className=" space-y-5 w-40 [&>li]:flex [&>li]:px-2 [&>li]:pt-1 
+                  className="space-y-5 w-40 [&>li]:flex [&>li]:px-2 [&>li]:pt-1 
                   [&>li]:cursor-pointer [&>li]:rounded-md [&>li]:gap-x-2 [&>li]:text-lg 
                   [&>li>span]:text-[17px] [&>li]:hover:bg-neutral-600"
                 >
@@ -284,28 +287,31 @@ function App() {
                 <ImageCrousel />
               </div>
             </div>
-            {/* <motion.div
-              className="mt-5"
+            <motion.div
+              className="mt-5 flex items-center sm:pr-5"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="sm:text-4xl text-2xl font-semibold sm:px-4 px-2">
+              <span className="custom-yellow mr-1 pl-4 sm:text-3xl text-xl">
                 Trending
-              </h1>
+              </span>{" "}
+              <span className="text-white sm:text-3xl text-xl">Now</span>
+              <div className="w-full border h-0  border-neutral-800"></div>
             </motion.div>
             <motion.div
-              className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-10 mt-0 items-center relative"
+              className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3 mt-0 items-center relative"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
             >
               <div
-                className="hidden sm:flex justify-start gap-x-4 items-center relative z-10 w-fit bottom-[63%] 
-         [&>button]:lg:text-[40px] [&>button]:text-[30px] [&>button]:cursor-pointer"
+                className="[&>button]:p-2 [&>button]:rounded-full [&>button]:absolute 
+              [&>button]:cursor-pointer [&>button]:z-10 [&>button]:text-5xl 
+              [&>button]:text-[#f3b00c] hidden md:block "
               >
                 <motion.button
-                  className="p-2 rounded-full"
+                  className=" bottom-40 left-2"
                   variants={buttonVariants}
                   initial="initial"
                   whileHover="hover"
@@ -317,7 +323,7 @@ function App() {
                 </motion.button>
 
                 <motion.button
-                  className="p-2 rounded-full"
+                  className="bottom-40 right-1"
                   variants={buttonVariants}
                   initial="initial"
                   whileHover="hover"
@@ -328,6 +334,7 @@ function App() {
                   <FaChevronLeft className="rotate-z-180" />
                 </motion.button>
               </div>
+
               <div
                 ref={trending_Movie_crousel}
                 className="flex gap-x-7 overflow-x-scroll px-2 py-4 scrollbar-hide transition-all scroll-smooth"
@@ -354,47 +361,50 @@ function App() {
             </motion.div>
 
             <motion.div
-              className=""
+              className="mt-5 flex items-center sm:pr-5"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="sm:text-4xl text-2xl font-semibold sm:px-4 px-2">
-                Now Playing
-              </h1>
+              <span className="text-white mr-1 pl-4 sm:text-3xl text-xl">
+                In
+              </span>
+              <span className="custom-yellow sm:text-3xl text-xl">Theater</span>
+              <div className="w-full border h-0  border-neutral-800"></div>
             </motion.div>
             <motion.div
-              className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-10 mt-0 sm:mb-10 relative"
+              className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3  mt-0 items-center relative"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
             >
               <div
-                className="hidden sm:flex justify-start gap-x-4 items-center relative z-10 w-fit bottom-[63%] 
-         [&>button]:lg:text-[40px] [&>button]:text-[30px] [&>button]:cursor-pointer"
+                className="[&>button]:p-2 [&>button]:rounded-full [&>button]:absolute 
+              [&>button]:cursor-pointer [&>button]:z-10 [&>button]:text-5xl 
+              [&>button]:text-[#f3b00c] hidden md:block "
               >
                 <motion.button
-                  className="p-2 rounded-full"
+                  className=" bottom-40 left-2"
                   variants={buttonVariants}
                   initial="initial"
                   whileHover="hover"
                   whileTap="tap"
                   onClick={(e) => handleclick("right", e)}
-                  id="now_playing_right"
+                  id="nowplaying_right"
                 >
                   <FaChevronLeft />
                 </motion.button>
 
                 <motion.button
-                  className="p-2 rounded-full"
+                  className="bottom-40 right-1"
                   variants={buttonVariants}
                   initial="initial"
                   whileHover="hover"
                   whileTap="tap"
                   onClick={(e) => handleclick("left", e)}
-                  id="now_playing_left"
+                  id="nowplaying_left"
                 >
-                  <FaChevronLeft className="rotate-180" />
+                  <FaChevronLeft className="rotate-z-180" />
                 </motion.button>
               </div>
               <div
@@ -421,55 +431,59 @@ function App() {
                 </AnimatePresence>
               </div>
             </motion.div>
-
             <motion.div
-              className=""
+              className="mt-5 flex items-center md:pr-5"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="sm:text-4xl text-2xl font-semibold sm:px-4 px-2">
-                Popular Tv Shows
-              </h1>
+              <span className="custom-yellow mr-1 pl-4 sm:text-3xl text-xl">
+                War
+              </span>{" "}
+              <span className="text-white sm:text-3xl text-xl">Movies</span>
+              <div className="w-full border h-0  border-neutral-800"></div>
             </motion.div>
             <motion.div
-              className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-10 mt-0 items-center relative"
+              className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3  mt-0 sm:mb-10 relative"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
             >
               <div
-                className="hidden sm:flex justify-start gap-x-4 items-center relative z-10 w-fit bottom-[63%] 
-         [&>button]:lg:text-[40px] [&>button]:text-[30px] [&>button]:cursor-pointer"
+                className="[&>button]:p-2 [&>button]:rounded-full [&>button]:absolute 
+              [&>button]:cursor-pointer [&>button]:z-10 [&>button]:text-5xl 
+              [&>button]:text-[#f3b00c] hidden md:block "
               >
                 <motion.button
-                  className="p-2 rounded-full"
+                  className=" bottom-40 left-2"
                   variants={buttonVariants}
                   initial="initial"
                   whileHover="hover"
                   whileTap="tap"
                   onClick={(e) => handleclick("right", e)}
+                  id="upcoming_right"
                 >
                   <FaChevronLeft />
                 </motion.button>
 
                 <motion.button
-                  className="p-2 rounded-full"
+                  className="bottom-40 right-1"
                   variants={buttonVariants}
                   initial="initial"
                   whileHover="hover"
                   whileTap="tap"
                   onClick={(e) => handleclick("left", e)}
+                  id="upcoming_left"
                 >
-                  <FaChevronLeft className="rotate-180" />
+                  <FaChevronLeft className="rotate-z-180" />
                 </motion.button>
               </div>
               <div
-                ref={popular_Show_crousel}
+                ref={upcoming_movies_crousel}
                 className="flex gap-x-7 overflow-x-scroll px-2 py-4 scrollbar-hide transition-all scroll-smooth"
               >
                 <AnimatePresence>
-                  {popular_TV_Show.map((movie) => (
+                  {war_movies.map((movie) => (
                     <motion.div
                       key={movie.id}
                       variants={itemVariants}
@@ -487,7 +501,7 @@ function App() {
                   ))}
                 </AnimatePresence>
               </div>
-            </motion.div> */}
+            </motion.div>
           </>
         }
       </div>

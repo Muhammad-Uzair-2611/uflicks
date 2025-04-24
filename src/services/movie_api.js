@@ -12,6 +12,7 @@ const SearchMovie_URL = `search/movie?api_key=${API_KEY}&query=`;
 const SearchShow_URL = `search/tv?api_key=${API_KEY}&query=`;
 const genres_URL = `genre/movie/list?api_key=${API_KEY}`;
 const filteredMovies_URL = `discover/movie?api_key=${API_KEY}&with_genres=`;
+const war_movies_URL = `discover/movie?api_key=${API_KEY}&with_genres=10752`;
 
 //* Custom error handler
 const handleApiError = (error) => {
@@ -45,18 +46,32 @@ function formatNumber(num) {
   }
 }
 
-//*Requests
+//*Queries
 export const getTrendingMovies = async () => {
   try {
     const fetch = await axios.get(`${BASE_URL}${trending_URL}`);
     const response = fetch.data.results;
     return response
-      .filter((movie) => movie.poster_path != null && movie.overview !== "")
+      .filter((movie) => movie.poster_path != null)
       .map((movie) => ({
         id: movie.id,
         title: movie.title,
-        media_type: movie.media_type,
-        release_date: movie.release_date,
+        poster: movie.poster_path,
+      }));
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const getWarMovies = async () => {
+  try {
+    const fetch = await axios.get(`${BASE_URL}${war_movies_URL}`);
+    const response = fetch.data.results;
+
+    return response
+      .filter((movie) => movie.poster_path != null)
+      .map((movie) => ({
+        id: movie.id,
+        title: movie.title,
         poster: movie.poster_path,
       }));
   } catch (error) {
@@ -64,7 +79,7 @@ export const getTrendingMovies = async () => {
   }
 };
 
-export const getTNowPlayingMovies = async () => {
+export const getNowPlayingMovies = async () => {
   try {
     const fetch = await axios.get(`${BASE_URL}${nowPlaying_URL}`);
     const response = fetch.data.results;

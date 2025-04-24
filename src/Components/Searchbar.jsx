@@ -107,14 +107,14 @@ const Searchbar = () => {
   return (
     <div className="w-full flex justify-center">
       <div
-        className={`px-3 bg-neutral-700 flex justify-between items-center gap-x-2 sm:w-150 w-100 sm:rounded-md rounded-lg h-fit sm:py-2 py-1 relative`}
+        className={`sm:px-3 px-2 md:bg-neutral-700 bg-none flex justify-between items-center gap-x-2 lg:w-150 md:w-100 w-0 md:rounded-md h-fit lg:py-2 md:py-1 relative ${location.pathname === "/search" && "w-60 "} `}
       >
         <span
           onClick={handleClick}
-          className="sm:text-xl text-sm cursor-pointer"
+          className={`sm:text-xl text-lg cursor-pointer`}
         >
           {location.pathname === "/search" ? (
-            <IoArrowBack onClick={() => setSearchItem("")} />
+            <IoArrowBack   onClick={() => setSearchItem("")} />
           ) : (
             <FaSearch />
           )}
@@ -127,7 +127,7 @@ const Searchbar = () => {
             setIsFocus(true);
             setShowFilters(false);
           }}
-          className="w-full outline-0 placeholder:text-sm"
+          className="w-full outline-0 placeholder:text-xs pt-1 text-sm"
           type="search"
           placeholder="Search Movie By Title."
         />
