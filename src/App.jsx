@@ -26,6 +26,7 @@ import {
 import ErrorBoundary from "./Components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./Components/Sidebar";
 
 const MemoizedMovieCard = React.memo(MovieCard);
 
@@ -239,50 +240,7 @@ function App() {
         {
           <>
             <div className="gap-x-1 w-full h-fit flex py-5 px-4">
-              <div className="md:block hidden">
-                <ul
-                  className="space-y-5 w-40 [&>li]:flex [&>li]:px-2 [&>li]:pt-1 
-                  [&>li]:cursor-pointer [&>li]:rounded-md [&>li]:gap-x-2 [&>li]:text-lg 
-                  [&>li>span]:text-[17px] [&>li]:hover:bg-neutral-600"
-                >
-                  <li>
-                    <HiHome />
-                    <span>Home</span>
-                  </li>
-                  <li>
-                    <MdMovie />
-                    <span>Movies</span>
-                  </li>
-                  <li>
-                    <LuTv />
-                    <span>TV Series</span>
-                  </li>
-                  <li>
-                    <PiFilmReel />
-                    <span>Animation</span>
-                  </li>
-                  <li>
-                    <FaSkull />
-                    <span>Horror</span>
-                  </li>
-                  <li>
-                    <GiCrossedSwords />
-                    <span>Action</span>
-                  </li>
-                  <li>
-                    <FaMasksTheater />
-                    <span>Drama</span>
-                  </li>
-                  <li>
-                    <FaMap />
-                    <span>Adventure</span>
-                  </li>
-                  <li>
-                    <GiMonoWheelRobot />
-                    <span>Sci-Fi</span>
-                  </li>
-                </ul>
-              </div>
+              <Sidebar />
               <div className="w-full">
                 <ImageCrousel />
               </div>
