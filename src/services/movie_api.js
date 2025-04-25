@@ -12,7 +12,7 @@ const SearchMovie_URL = `search/movie?api_key=${API_KEY}&query=`;
 const SearchShow_URL = `search/tv?api_key=${API_KEY}&query=`;
 const genres_URL = `genre/movie/list?api_key=${API_KEY}`;
 const filteredMovies_URL = `discover/movie?api_key=${API_KEY}&with_genres=`;
-const war_movies_URL = `discover/movie?api_key=${API_KEY}&with_genres=10752`;
+const airingToday_URL = `tv/airing_today?api_key=${API_KEY}`;
 
 //* Custom error handler
 const handleApiError = (error) => {
@@ -62,22 +62,6 @@ export const getTrendingMovies = async () => {
     handleApiError(error);
   }
 };
-export const getWarMovies = async () => {
-  try {
-    const fetch = await axios.get(`${BASE_URL}${war_movies_URL}`);
-    const response = fetch.data.results;
-
-    return response
-      .filter((movie) => movie.poster_path != null)
-      .map((movie) => ({
-        id: movie.id,
-        title: movie.title,
-        poster: movie.poster_path,
-      }));
-  } catch (error) {
-    handleApiError(error);
-  }
-};
 
 export const getNowPlayingMovies = async () => {
   try {
@@ -101,13 +85,27 @@ export const getNowPlayingMovies = async () => {
 export const getTopRatedMovies = async () => {
   try {
     const fetch = await axios.get(`${BASE_URL}${topRatedMovies_URL}`);
-    const response = fetch.data.results;
+    const fetch2 = await axios.get(`${BASE_URL}${topRatedTvShows_URL}`);
+
+    const response = [...fetch2.data.results, ...fetch.data.results];
+
+    //!  Fisher-Yates Shuffle
+    for (let i = response.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [response[i], response[j]] = [response[j], response[i]];
+    }
+    console.log(response);
     return response
-      .filter((movie) => movie.backdrop_path != null)
+      .filter(
+        (movie) =>
+          movie.backdrop_path != null &&
+          movie.poster_path != null &&
+          movie?.name != "When Life Gives You Tangerines"
+      )
       .map((movie) => ({
         id: movie.id,
-        title: movie.title,
-        release_date: movie.release_date,
+        title: movie.title || movie.name,
+        release_date: movie.release_date || movie.first_air_date,
         banner: movie.backdrop_path,
         poster: movie.poster_path,
         overview: movie.overview,
@@ -130,6 +128,24 @@ export const topRatedTvShows = async () => {
         release_date: movie.first_air_date,
         poster: movie.poster_path,
         overview: movie.overview,
+      }));
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const getTodayShows = async () => {
+  try {
+    const fetch = await axios.get(`${BASE_URL}${airingToday_URL}`);
+    const response = fetch.data.results;
+
+    return response
+      .filter((movie) => movie.poster_path != null)
+      .map((movie) => ({
+        id: movie.id,
+        title: movie.name,
+        release_date: movie.first_air_date,
+        poster: movie.poster_path,
       }));
   } catch (error) {
     handleApiError(error);

@@ -6,13 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import MovieCard from "./Components/MovieCard";
-import { FaChevronLeft, FaSkull, FaMap } from "react-icons/fa";
-import { HiHome } from "react-icons/hi2";
-import { MdMovie } from "react-icons/md";
-import { PiFilmReel } from "react-icons/pi";
-import { GiCrossedSwords, GiMonoWheelRobot } from "react-icons/gi";
-import { LuTv } from "react-icons/lu";
-import { FaMasksTheater } from "react-icons/fa6";
+import { FaChevronLeft } from "react-icons/fa";
 import { useSearch } from "./Context/Searchcontext";
 import { useMovieInfo } from "./Context/MovieInfoContext";
 import ImageCrousel from "./Components/ImageCrousel";
@@ -20,8 +14,8 @@ import {
   getTrendingMovies,
   getNowPlayingMovies,
   getPopularShow,
+  getTodayShows,
   getImageURL,
-  getWarMovies,
 } from "./services/movie_api";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,8 +28,8 @@ function App() {
   //*States & Ref
   const [trendng_Movies, set_Trendng_Movies] = useState([]);
   const [now_Playing, set_Now_Playing] = useState([]);
-  const [popular_TV_Show, set_Popular_TV_Show] = useState([]);
-  const [war_movies, set_War_Movies] = useState([]);
+  const [popular_Shows, set_Popular_Shows] = useState([]);
+  const [today_Shows, set_Today_Shows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [imageURL, setImageURL] = useState();
   const [error, setError] = useState(null);
@@ -43,7 +37,8 @@ function App() {
   const { isAllowed, setIsAllowed } = useMovieInfo();
   const trending_Movie_crousel = useRef(null);
   const now_Playing_crousel = useRef(null);
-  const upcoming_movies_crousel = useRef(null);
+  const popular_show_crousel = useRef(null);
+  const today_show_crousel = useRef(null);
   const navigate = useNavigate();
 
   // Memoized animation variants
@@ -120,20 +115,19 @@ function App() {
         setIsAllowed(false);
         setLoading(true);
         setError(null);
-        const [trendingMovies, nowPlaying, popularShow, ImageURL, upComping] =
+        const [trendingMovies, nowPlaying, popularShow, todayShow, ImageURL] =
           await Promise.all([
             getTrendingMovies(),
             getNowPlayingMovies(),
             getPopularShow(),
+            getTodayShows(),
             getImageURL(),
-            getWarMovies(),
           ]);
         if (mounted) {
           set_Trendng_Movies(trendingMovies);
           set_Now_Playing(nowPlaying);
-          set_Popular_TV_Show(popularShow);
-          set_War_Movies(upComping);
-
+          set_Popular_Shows(popularShow);
+          set_Today_Shows(todayShow);
           setImageURL(ImageURL);
         }
       } catch (err) {
@@ -171,13 +165,17 @@ function App() {
           trending_Movie_crousel.current.scrollLeft -= 200;
         else if (e.currentTarget.id === "nowplaying_right")
           now_Playing_crousel.current.scrollLeft -= 200;
-        else upcoming_movies_crousel.current.scrollLeft -= 200;
+        else if (e.currentTarget.id === "todayShows_right")
+          today_show_crousel.current.scrollLeft -= 200;
+        else popular_show_crousel.current.scrollLeft -= 200;
       } else if (direction === "left") {
         if (e.currentTarget.id === "trending_left")
           trending_Movie_crousel.current.scrollLeft += 200;
         else if (e.currentTarget.id === "nowplaying_left")
           now_Playing_crousel.current.scrollLeft += 200;
-        else upcoming_movies_crousel.current.scrollLeft += 200;
+        else if (e.currentTarget.id === "todayShows_left")
+          today_show_crousel.current.scrollLeft += 200;
+        else popular_show_crousel.current.scrollLeft += 200;
       }
     } catch (err) {
       console.error("Error handling click:", err);
@@ -245,6 +243,7 @@ function App() {
                 <ImageCrousel />
               </div>
             </div>
+            {/* //! Trending Movies */}
             <motion.div
               className="mt-5 flex items-center sm:pr-5"
               initial={{ opacity: 0, y: -20 }}
@@ -317,17 +316,17 @@ function App() {
                 </AnimatePresence>
               </div>
             </motion.div>
-
+            {/* //! Playing Now */}
             <motion.div
               className="mt-5 flex items-center sm:pr-5"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <span className="text-white mr-1 pl-4 sm:text-3xl text-xl">
-                In
+              <span className="custom-yellow mr-1 pl-4 sm:text-3xl text-xl">
+                Playing
               </span>
-              <span className="custom-yellow sm:text-3xl text-xl">Theater</span>
+              <span className=" sm:text-3xl text-xl">now</span>
               <div className="w-full border h-0  border-neutral-800"></div>
             </motion.div>
             <motion.div
@@ -389,6 +388,7 @@ function App() {
                 </AnimatePresence>
               </div>
             </motion.div>
+            {/* //! Today Airing */}
             <motion.div
               className="mt-5 flex items-center md:pr-5"
               initial={{ opacity: 0, y: -20 }}
@@ -396,9 +396,9 @@ function App() {
               transition={{ duration: 0.5 }}
             >
               <span className="custom-yellow mr-1 pl-4 sm:text-3xl text-xl">
-                War
+                Today's
               </span>{" "}
-              <span className="text-white sm:text-3xl text-xl">Movies</span>
+              <span className="text-white sm:text-3xl text-xl">Airing</span>
               <div className="w-full border h-0  border-neutral-800"></div>
             </motion.div>
             <motion.div
@@ -419,7 +419,7 @@ function App() {
                   whileHover="hover"
                   whileTap="tap"
                   onClick={(e) => handleclick("right", e)}
-                  id="upcoming_right"
+                  id="todayShows_right"
                 >
                   <FaChevronLeft />
                 </motion.button>
@@ -431,17 +431,89 @@ function App() {
                   whileHover="hover"
                   whileTap="tap"
                   onClick={(e) => handleclick("left", e)}
-                  id="upcoming_left"
+                  id="todayShows_left"
                 >
                   <FaChevronLeft className="rotate-z-180" />
                 </motion.button>
               </div>
               <div
-                ref={upcoming_movies_crousel}
+                ref={today_show_crousel}
                 className="flex gap-x-7 overflow-x-scroll px-2 py-4 scrollbar-hide transition-all scroll-smooth"
               >
                 <AnimatePresence>
-                  {war_movies.map((movie) => (
+                  {today_Shows.map((movie) => (
+                    <motion.div
+                      key={movie.id}
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <MemoizedMovieCard
+                        url={imageURL.url}
+                        size={imageURL.sizes[1]}
+                        poster={movie.poster}
+                        title={movie.title}
+                        id={movie.id}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+            {/* //! Popular Shoews*/}
+            <motion.div
+              className="mt-5 flex items-center md:pr-5"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <span className="custom-yellow mr-1 pl-4 sm:text-3xl text-xl">
+                Popular
+              </span>{" "}
+              <span className="text-white sm:text-3xl text-xl">Shows</span>
+              <div className="w-full border h-0  border-neutral-800"></div>
+            </motion.div>
+            <motion.div
+              className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3  mt-0 sm:mb-10 relative"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <div
+                className="[&>button]:p-2 [&>button]:rounded-full [&>button]:absolute 
+              [&>button]:cursor-pointer [&>button]:z-10 [&>button]:text-5xl 
+              [&>button]:text-[#f3b00c] hidden md:block "
+              >
+                <motion.button
+                  className=" bottom-40 left-2"
+                  variants={buttonVariants}
+                  initial="initial"
+                  whileHover="hover"
+                  whileTap="tap"
+                  onClick={(e) => handleclick("right", e)}
+                  id="popularShows_right"
+                >
+                  <FaChevronLeft />
+                </motion.button>
+
+                <motion.button
+                  className="bottom-40 right-1"
+                  variants={buttonVariants}
+                  initial="initial"
+                  whileHover="hover"
+                  whileTap="tap"
+                  onClick={(e) => handleclick("left", e)}
+                  id="popularShows_left"
+                >
+                  <FaChevronLeft className="rotate-z-180" />
+                </motion.button>
+              </div>
+              <div
+                ref={popular_show_crousel}
+                className="flex gap-x-7 overflow-x-scroll px-2 py-4 scrollbar-hide transition-all scroll-smooth"
+              >
+                <AnimatePresence>
+                  {popular_Shows.map((movie) => (
                     <motion.div
                       key={movie.id}
                       variants={itemVariants}
