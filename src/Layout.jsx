@@ -7,9 +7,8 @@ import { MoviesInfoProvider } from "./Context/MovieInfoContext";
 const Layout = () => {
   const matches = useMatches();
 
-  const is404 = matches.some((match) => match.handle?.hideSearch);
   const hideSearNav = matches.some(
-    (match) => match.handle?.hide_Search_n_navbar
+    (match) => match.handle?.hide_navbar
   );
 
   return (

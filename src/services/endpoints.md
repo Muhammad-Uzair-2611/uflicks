@@ -82,7 +82,7 @@
   `GET https://api.themoviedb.org/3/trending/tv/{time_window}?api_key=355b13e494a808991526389d0adce37c`
 
 - **Trending People**  
-  `GET https://api.themoviedb.org/3/trending/person/{time_window}?api_key=355b13e494a808991526389d0adce37c`
+  `GET https://api.themoviedb.org/3/trending/person/day?api_key=355b13e494a808991526389d0adce37c`
 
 ---
 

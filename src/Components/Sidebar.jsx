@@ -45,7 +45,7 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to="/tv"
+          to="/tv_series"
           className={({ isActive }) => (isActive ? "bg-neutral-600" : "")}
         >
           <li>
