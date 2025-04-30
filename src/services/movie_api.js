@@ -3,7 +3,8 @@ import axios from "axios";
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = `https://api.themoviedb.org/3/`;
 const search_URL = `search/movie?api_key=${API_KEY}&language=en-US&query=`;
-const trending_URL = `trending/movie/day?api_key=${API_KEY}&language=en-US`;
+const trendingMovies_URL = `trending/movie/day?api_key=${API_KEY}&language=en-US`;
+const trendingShows_URL = `trending/tv/day?api_key=${API_KEY}`;
 const nowPlaying_URL = `movie/now_playing?api_key=${API_KEY}`;
 const popularMovies_URL = `movie/popular?api_key=${API_KEY}`;
 const popularShow_URL = `tv/popular?api_key=${API_KEY}`;
@@ -52,13 +53,28 @@ function formatNumber(num) {
 //*Queries
 export const getTrendingMovies = async () => {
   try {
-    const fetch = await axios.get(`${BASE_URL}${trending_URL}`);
+    const fetch = await axios.get(`${BASE_URL}${trendingMovies_URL}`);
     const response = fetch.data.results;
     return response
       .filter((movie) => movie.poster_path != null)
       .map((movie) => ({
         id: movie.id,
         title: movie.title,
+        poster: movie.poster_path,
+      }));
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const getTrendingShows = async () => {
+  try {
+    const fetch = await axios.get(`${BASE_URL}${trendingShows_URL}`);
+    const response = fetch.data.results;
+    return response
+      .filter((movie) => movie.poster_path != null)
+      .map((movie) => ({
+        id: movie.id,
+        title: movie.name,
         poster: movie.poster_path,
       }));
   } catch (error) {
@@ -115,7 +131,7 @@ export const getScienceFictionMovies = async () => {
   }
 };
 
-export const getTopRatedMovies = async () => {
+export const getTopRated = async () => {
   try {
     const fetch = await axios.get(`${BASE_URL}${topRatedMovies_URL}`);
     const fetch2 = await axios.get(`${BASE_URL}${topRatedTvShows_URL}`);
@@ -148,17 +164,41 @@ export const getTopRatedMovies = async () => {
   }
 };
 
-export const topRatedTvShows = async () => {
+export const getTopRatedTvShows = async () => {
   try {
     const fetch = await axios.get(`${BASE_URL}${topRatedTvShows_URL}`);
     const response = fetch.data.results;
 
     return response
-      .filter((movie) => movie.poster_path != null && movie.overview !== "")
+      .filter(
+        (movie) => movie.backdrop_path != null && movie.poster_path != null
+      )
       .map((movie) => ({
         id: movie.id,
         title: movie.name,
+        banner: movie.backdrop_path,
         release_date: movie.first_air_date,
+        poster: movie.poster_path,
+        overview: movie.overview,
+      }));
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const getTopRatedMovies = async () => {
+  try {
+    const fetch = await axios.get(`${BASE_URL}${topRatedMovies_URL}`);
+    const response = fetch.data.results;
+    console.log(response);
+    return response
+      .filter(
+        (movie) => movie.backdrop_path != null && movie.poster_path != null
+      )
+      .map((movie) => ({
+        id: movie.id,
+        title: movie.title,
+        banner: movie.backdrop_path,
+        release_date: movie.release_date,
         poster: movie.poster_path,
         overview: movie.overview,
       }));

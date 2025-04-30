@@ -8,9 +8,9 @@ import { GiCrossedSwords, GiMonoWheelRobot } from "react-icons/gi";
 
 const Sidebar = () => {
   return (
-    <div className="md:block hidden">
+    <div className="md:block hidden h-fit">
       <ul
-        className="space-y-6 w-40 
+        className="md:space-y-6 sm:space-y-2 w-40 
         [&>a]:flex 
         [&>a]:px-2 
         [&>a]:cursor-pointer 
@@ -35,7 +35,8 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to="/movies"
+          onClick={() => console.log("Movies Btn Click")}
+          to={"/movies"}
           className={({ isActive }) => (isActive ? "bg-neutral-600" : "")}
         >
           <li>

@@ -15,6 +15,10 @@ const MoviesPage = () => {
         </div>
       </div>
       <Sliders />
+      <div className="w-full my-2  tracking-widest text-xl text-center">
+        Use <span className="custom-yellow">Filter</span> to get more{" "}
+        <span className="custom-yellow">Results</span>
+      </div>
     </>
   );
 };

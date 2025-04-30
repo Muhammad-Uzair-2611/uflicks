@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { getImageURL, getTopRatedMovies } from "../services/movie_api";
-import { useNavigate } from "react-router-dom";
+import {
+  getImageURL,
+  getTopRated,
+  getTopRatedMovies,
+  getTopRatedTvShows,
+} from "../services/movie_api";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useMovieInfo } from "../Context/MovieInfoContext";
 const SimpleCarousel = () => {
   //*States & Refrences
@@ -11,7 +16,7 @@ const SimpleCarousel = () => {
   const intervalRef = useRef(null);
   const { setMovieId, setIsAllowed } = useMovieInfo();
   const navigate = useNavigate();
-
+  const location = useLocation();
   //*Functions
   const startAutoPlay = () => {
     intervalRef.current = setInterval(() => {
@@ -34,10 +39,15 @@ const SimpleCarousel = () => {
   //*Effects
   useEffect(() => {
     async function fetchData() {
-      const [imageURL, topRated] = await Promise.all([
-        getImageURL(),
-        getTopRatedMovies(),
-      ]);
+      let promise;
+      if (location.pathname === "/") {
+        promise = getTopRated();
+      } else if (location.pathname === "/movies") {
+        promise = getTopRatedMovies();
+      } else {
+        promise = getTopRatedTvShows();
+      }
+      const [imageURL, topRated] = await Promise.all([getImageURL(), promise]);
       setImageURL(imageURL);
       setTopRated(topRated);
     }
@@ -45,7 +55,7 @@ const SimpleCarousel = () => {
     fetchData();
 
     return () => stopAutoPlay(); // cleanup
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (topRated.length > 0) {
@@ -58,7 +68,7 @@ const SimpleCarousel = () => {
 
   return (
     <div
-      className="w-full pb-4 h-fit overflow-hidden relative  cursor-pointer"
+      className="w-full sm:pb-4 pb-0 h-fit overflow-hidden relative  cursor-pointer"
       onMouseEnter={() => {
         stopAutoPlay();
         setIsHover(true);
@@ -75,10 +85,9 @@ const SimpleCarousel = () => {
           width: `${topRated.length * 100}%`,
           transform: `translateX(-${currentIndex * (100 / topRated.length)}%)`,
           transition: "transform 0.5s ease-in-out",
-          
         }}
       >
-        {topRated.map((movie, idx) => (
+        {topRated?.map((movie, idx) => (
           <div
             key={movie.id}
             id={movie.id}
@@ -88,7 +97,7 @@ const SimpleCarousel = () => {
               flexShrink: 0,
               height: "100%",
               position: "relative",
-              borderRadius : "10px"
+              borderRadius: "10px",
             }}
           >
             <img
@@ -112,7 +121,7 @@ const SimpleCarousel = () => {
       {topRated[currentIndex] && (
         <div
           id={topRated[currentIndex].id}
-          className={`md:absolute z-10 md:flex gap-x-4 top-1/4 left-10 text-white transition-all duration-500 opacity-100 translate-y-4 w-full  ${
+          className={`md:absolute z-10 md:flex gap-x-4 top-1/4 left-10 text-white transition-all duration-500 opacity-100 translate-y-4 w-full pb-3  ${
             isHover
               ? "md:opacity-100 md:translate-y-0"
               : "md:opacity-0 md:translate-y-4"

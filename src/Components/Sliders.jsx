@@ -18,6 +18,7 @@ import {
   getScienceFictionMovies,
   getPopularMovies,
   getOnGoingShows,
+  getTrendingShows,
 } from "../services/movie_api.js";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -42,40 +43,59 @@ const Sliders = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  //*titles
+  const [title_1, setTitle_1] = useState("");
+  const [title_2, setTitle_2] = useState("");
+  const [title_3, setTitle_3] = useState("");
+  const [title_4, setTitle_4] = useState("");
+
   //*Effects
   useEffect(() => {
     let mounted = true;
+    let promisesArray;
     async function fetchData() {
       try {
-        let promiesesArray;
-        if (location.pathname == "/") {
-          promiesesArray = [
+        if (location.pathname === "/") {
+          promisesArray = [
             getTrendingMovies(),
             getNowPlayingMovies(),
             getPopularShow(),
             getTodayShows(),
           ];
-        } else if (location.pathname == "/movies") {
-          promiesesArray = [
+          setTitle_1(["Trending", "Movies"]);
+          setTitle_2(["Playing", " Now"]);
+          setTitle_3(["Popular", "Shows"]);
+          setTitle_4(["Airing", "Today"]);
+        } else if (location.pathname === "/movies") {
+          promisesArray = [
             getTrendingMovies(),
             getNowPlayingMovies(),
             getScienceFictionMovies(),
             getPopularMovies(),
           ];
+          setTitle_1(["Trending", "Movies"]);
+          setTitle_2(["Playing", "Now"]);
+          setTitle_3(["Sci-Fi", "Movies"]);
+          setTitle_4(["Popular", "Movies"]);
         } else {
-          promiesesArray = [
+          promisesArray = [
+            getTrendingShows(),
             getPopularShow(),
-            getTodayShows(),
             getTodayShows(),
             getOnGoingShows(),
           ];
+          setTitle_1(["Trending", "Shows"]);
+          setTitle_2(["Popular", "Shows"]);
+          setTitle_3(["Today", "Airing"]);
+          setTitle_4(["Active", "Shows"]);
         }
+
         setIsAllowed(false);
         setLoading(true);
         setError(null);
 
         const [trending, nowPlaying, popular, today, ImageURL] =
-          await Promise.all([...promiesesArray, getImageURL()]);
+          await Promise.all([...promisesArray, getImageURL()]);
         if (mounted) {
           set_Trendng(trending);
           set_Now_Playing(nowPlaying);
@@ -99,15 +119,13 @@ const Sliders = () => {
       mounted = false;
     };
   }, [location.pathname]);
+
   useEffect(() => {
     JSON.stringify(sessionStorage.setItem("isAllowed", isAllowed));
   }, [isAllowed]);
 
   useEffect(() => {
     if (isFocus) navigate("/search");
-    else {
-      navigate(-1);
-    }
   }, [isFocus]);
 
   //*Functions
@@ -259,10 +277,10 @@ const Sliders = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <span className="custom-yellow mr-1 pl-4 sm:text-3xl text-xl">
-          Trending
+        <span className="custom-yellow mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
+          {title_1[0]}
         </span>{" "}
-        <span className="text-white sm:text-3xl text-xl">Now</span>
+        <span className="text-white sm:text-3xl text-xl">{title_1[1]}</span>
         <div className="w-full border h-0  border-neutral-800"></div>
       </motion.div>
       <motion.div
@@ -332,10 +350,10 @@ const Sliders = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <span className="custom-yellow mr-1 pl-4 sm:text-3xl text-xl">
-          Playing
+        <span className="custom-yellow mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
+          {title_2[0]}
         </span>
-        <span className=" sm:text-3xl text-xl">now</span>
+        <span className=" sm:text-3xl text-xl">{title_2[1]}</span>
         <div className="w-full border h-0  border-neutral-800"></div>
       </motion.div>
       <motion.div
@@ -404,10 +422,10 @@ const Sliders = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <span className="custom-yellow mr-1 pl-4 sm:text-3xl text-xl">
-          Today's
+        <span className="custom-yellow mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
+          {title_3[0]}
         </span>{" "}
-        <span className="text-white sm:text-3xl text-xl">Airing</span>
+        <span className="text-white sm:text-3xl text-xl">{title_3[1]}</span>
         <div className="w-full border h-0  border-neutral-800"></div>
       </motion.div>
       <motion.div
@@ -476,11 +494,13 @@ const Sliders = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <span className="custom-yellow mr-1 pl-4 sm:text-3xl text-xl">
-          Popular
-        </span>{" "}
-        <span className="text-white sm:text-3xl text-xl">Shows</span>
-        <div className="w-full border h-0  border-neutral-800"></div>
+        <span className="custom-yellow mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
+          {title_4[0]}
+        </span>
+        <span className="text-white sm:text-3xl w-full text-xl ">
+          {title_4[1]}
+        </span>
+        {/* <div className="w-full border h-0  border-neutral-800"></div> */}
       </motion.div>
       <motion.div
         className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3  mt-0 sm:mb-10 relative"
