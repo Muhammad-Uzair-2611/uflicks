@@ -7,7 +7,7 @@ const MoviesPage = () => {
     <>
       <Hero />
       <div className="w-full flex justify-end items-center px-4">
-        <div className="flex gap-x-1 tracking-wider cursor-pointer text-lg">
+        <div className="flex gap-x-1 tracking-wider cursor-pointer sm:text-lg text-sm">
           <span>Filter</span>
           <span>
             <FaFilter />
@@ -15,9 +15,9 @@ const MoviesPage = () => {
         </div>
       </div>
       <Sliders />
-      <div className="w-full my-2  tracking-widest text-xl text-center">
-        Use <span className="custom-yellow">Filter</span> to get more{" "}
-        <span className="custom-yellow">Results</span>
+      <div className="w-full my-2 tracking-widest sm:text-xl text-sm text-center">
+        Use <span className="text-amber">Filter</span> to get more{" "}
+        <span className="text-amber">Results</span>
       </div>
     </>
   );

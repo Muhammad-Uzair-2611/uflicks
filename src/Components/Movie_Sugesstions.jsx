@@ -26,10 +26,7 @@ const Movie_Sugesstions = () => {
         setError(null);
         const imageURl = await getImageURL();
         setImageURL(imageURl);
-        const movies = await getFliteredMovies(
-          filter.id ? filter.id : "28,12,878"
-        );
-
+        const movies = await getFliteredMovies("28,12,878");
         setCurrentMovies(movies);
       } catch (err) {
         setError(err.message);
@@ -40,32 +37,11 @@ const Movie_Sugesstions = () => {
     }
     fetchData();
   }, []);
-  useEffect(() => {
-    async function fetchMovies() {
-      setLoading(true);
-      try {
-        const movies = await getFliteredMovies(
-          filter.id ? filter.id : "28,12,878"
-        );
-        setCurrentMovies(movies);
-      } catch (err) {
-        setError(err.message);
-        console.error("Error fetching content:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchMovies();
-  }, [filter]);
 
   useEffect(() => {
-    if (searchResult === "") {
+    if (searchItem === "") {
       async function fetch() {
-        const movies = await getFliteredMovies(
-          filter.id ? filter.id : "28,12,878"
-        );
-
+        const movies = await getFliteredMovies("28,12,878");
         setCurrentMovies(movies);
       }
       fetch();
@@ -79,7 +55,6 @@ const Movie_Sugesstions = () => {
     if (visibleCardCount >= currentMovies.length) return;
     const observer = new IntersectionObserver((entries) => {
       const entry1 = entries[0];
-
       if (entry1.isIntersecting) {
         setVisibleCardCount((prev) => prev + 10);
       }
@@ -229,7 +204,7 @@ const Movie_Sugesstions = () => {
       >
         {searchItem === ""
           ? `${filter.name ? `${filter.name}` : `Discover`}`
-          : `Search Results: ${searchResult.length}`}
+          : `Search Results: ${searchResult?.length || 0}`}
       </motion.div>
       <motion.div
         className={`sm:px-4 px-2 mb-2 sm:gap-y-8 gap-y-8 gap-x-4 sm:block ${
@@ -247,7 +222,7 @@ const Movie_Sugesstions = () => {
                   key={movie.id}
                   id={movie.id}
                   onClick={handleClick}
-                  className="sm:bg-neutral-900 bg-none sm:w-full w-fit flex sm:mb-3 mb-0 sm:py-2 p-0 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer"
+                  className="sm:bg-[#2b2b2b] bg-none sm:w-full w-fit flex sm:mb-3 mb-0 sm:py-2 p-0 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer"
                   ref={index === visibleCardCount - 1 ? lastRenderedCard : null}
                   variants={itemVariants}
                   whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}

@@ -76,7 +76,7 @@ const NavBar = () => {
         </div>
       </div>
       <ul className="hidden md:flex gap-x-6 font-bold md:text-lg lg:text-xl [&>li]:hover:cursor-pointer ">
-        <li className="custom-yellow ">Favourite</li>
+        <li className="text-amber ">Favourite</li>
         <li>About me </li>
       </ul>
     </nav>

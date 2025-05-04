@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { HiHome } from "react-icons/hi";
 import { MdMovie } from "react-icons/md";
 import { LuTv } from "react-icons/lu";
@@ -7,14 +7,17 @@ import { FaSkull, FaMasksTheater, FaMap } from "react-icons/fa6";
 import { GiCrossedSwords, GiMonoWheelRobot } from "react-icons/gi";
 
 const Sidebar = () => {
+  const location = useLocation();
+
+  const isCurrentSection = (path) => location.pathname.startsWith(path);
   return (
-    <div className="md:block hidden h-fit">
+    <div className={`md:block hidden h-full md:py-5 sm:py-3 py-2 px-4`}>
       <ul
-        className="md:space-y-6 sm:space-y-2 w-40 
+        className="lg:space-y-6 md:space-y-3.5  sm:space-y-1 w-40 
         [&>a]:flex 
         [&>a]:px-2 
         [&>a]:cursor-pointer 
-        [&>a]:rounded-md 
+        [&>a]:rounded-sm 
         [&>a>li]:gap-x-2 
         [&>a>li]:text-lg
         [&>a>li]:flex 
@@ -22,7 +25,8 @@ const Sidebar = () => {
         [&>a>li]:py-1
         [&>a>li>span]:text-[17px] 
         [&>a>li>span]:h-5
-        [&>a]:hover:bg-neutral-600"
+        [&>a]:transition-all
+        [&>a>li]:hover:scale-105"
       >
         <NavLink
           to="/"
@@ -35,7 +39,6 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          onClick={() => console.log("Movies Btn Click")}
           to={"/movies"}
           className={({ isActive }) => (isActive ? "bg-neutral-600" : "")}
         >
@@ -56,18 +59,20 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to="/animation"
-          className={({ isActive }) => (isActive ? "bg-neutral-600" : "")}
+          to="/animations/movies"
+          className={`${
+            isCurrentSection("/animations") ? "bg-neutral-600" : ""
+          }`}
         >
           <li>
             <PiFilmReel />
-            <span>Animation</span>
+            <span>Animations</span>
           </li>
         </NavLink>
 
         <NavLink
-          to="/horror"
-          className={({ isActive }) => (isActive ? "bg-neutral-600" : "")}
+          to="/horror/movies"
+          className={`${isCurrentSection("/horror") ? "bg-neutral-600" : ""}`}
         >
           <li>
             <FaSkull />
@@ -76,8 +81,10 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to="/action"
-          className={({ isActive }) => (isActive ? "bg-neutral-600" : "")}
+          to="/action/movies"
+          className={`${
+            isCurrentSection("/action") ? "bg-neutral-600" : ""
+          }`}
         >
           <li>
             <GiCrossedSwords />
@@ -86,8 +93,10 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to="/drama"
-          className={({ isActive }) => (isActive ? "bg-neutral-600" : "")}
+          to="/drama/movies"
+          className={`${
+            isCurrentSection("/drama") ? "bg-neutral-600" : ""
+          }`}
         >
           <li>
             <FaMasksTheater />
@@ -96,8 +105,10 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to="/adventure"
-          className={({ isActive }) => (isActive ? "bg-neutral-600" : "")}
+          to="/adventure/movies"
+          className={`${
+            isCurrentSection("/adventure") ? "bg-neutral-600" : ""
+          }`}
         >
           <li>
             <FaMap />
@@ -106,8 +117,10 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to="/sci-fi"
-          className={({ isActive }) => (isActive ? "bg-neutral-600" : "")}
+          to="/sci-fi/movies"
+          className={`${
+            isCurrentSection("/sci-fi") ? "bg-neutral-600" : ""
+          }`}
         >
           <li>
             <GiMonoWheelRobot />

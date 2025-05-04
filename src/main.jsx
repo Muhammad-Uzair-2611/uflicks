@@ -10,6 +10,7 @@ import ErrorBoundary from "./Components/ErrorBoundary";
 import MovieInfo from "./Components/MovieInfo.jsx";
 import Movie_Sugesstions from "./Components/Movie_Sugesstions.jsx";
 import MoviesPage from "./Pages/MoviesPage.jsx";
+import CategoryPage from "./Pages/CategoryPage.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -30,6 +31,16 @@ const routes = createBrowserRouter([
       {
         path: "tv_series",
         element: <MoviesPage />,
+        handle: { hide_navbar: false },
+      },
+      {
+        path: "animations/movies",
+        element: <CategoryPage />,
+        handle: { hide_navbar: false },
+      },
+      {
+        path: "animations/shows",
+        element: <CategoryPage />,
         handle: { hide_navbar: false },
       },
       {

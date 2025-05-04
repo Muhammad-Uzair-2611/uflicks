@@ -4,9 +4,9 @@ import ImageCrousel from "./ImageCrousel";
 
 const Hero = () => {
   return (
-    <div className="gap-x-1 w-full h-fit flex md:py-5 sm:py-3 py-2 px-4">
+    <div className="gap-x-1  px-3 w-full h-fit flex ">
       <Sidebar />
-      <div className="w-full">
+      <div className="w-full h-fit">
         <ImageCrousel />
       </div>
     </div>

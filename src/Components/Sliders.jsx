@@ -272,12 +272,13 @@ const Sliders = () => {
     <>
       {/* //! Trending Movies */}
       <motion.div
-        className="mt-5 flex items-center sm:pr-5"
+        className="mt-5 flex ite
+        ms-center sm:pr-5"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <span className="custom-yellow mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
+        <span className="text-amber mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
           {title_1[0]}
         </span>{" "}
         <span className="text-white sm:text-3xl text-xl">{title_1[1]}</span>
@@ -324,6 +325,7 @@ const Sliders = () => {
           className="flex gap-x-7 overflow-x-scroll px-2 py-4 scrollbar-hide transition-all scroll-smooth"
         >
           <AnimatePresence>
+            
             {trendng_Movies?.map((movie) => (
               <motion.div
                 key={movie.id}
@@ -350,7 +352,7 @@ const Sliders = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <span className="custom-yellow mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
+        <span className="text-amber mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
           {title_2[0]}
         </span>
         <span className=" sm:text-3xl text-xl">{title_2[1]}</span>
@@ -422,7 +424,7 @@ const Sliders = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <span className="custom-yellow mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
+        <span className="text-amber mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
           {title_3[0]}
         </span>{" "}
         <span className="text-white sm:text-3xl text-xl">{title_3[1]}</span>
@@ -494,13 +496,13 @@ const Sliders = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <span className="custom-yellow mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
+        <span className="text-amber mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
           {title_4[0]}
         </span>
         <span className="text-white sm:text-3xl w-full text-xl ">
           {title_4[1]}
         </span>
-        {/* <div className="w-full border h-0  border-neutral-800"></div> */}
+        <div className="w-full border h-0  border-neutral-800"></div>
       </motion.div>
       <motion.div
         className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3  mt-0 sm:mb-10 relative"

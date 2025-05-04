@@ -12,6 +12,7 @@ const SimpleCarousel = () => {
   const [topRated, setTopRated] = useState([]);
   const [imageURL, setImageURL] = useState({});
   const [isHover, setIsHover] = useState(false);
+  const [heading, setHeading] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef(null);
   const { setMovieId, setIsAllowed } = useMovieInfo();
@@ -42,33 +43,38 @@ const SimpleCarousel = () => {
       let promise;
       if (location.pathname === "/") {
         promise = getTopRated();
+        setHeading("Movies And Shows");
       } else if (location.pathname === "/movies") {
         promise = getTopRatedMovies();
+        setHeading("Movies");
       } else {
         promise = getTopRatedTvShows();
+        setHeading("Shows");
       }
       const [imageURL, topRated] = await Promise.all([getImageURL(), promise]);
       setImageURL(imageURL);
       setTopRated(topRated);
+      console.lg
+     
     }
 
     fetchData();
 
-    return () => stopAutoPlay(); // cleanup
+    return () => stopAutoPlay();
   }, [location.pathname]);
 
   useEffect(() => {
     if (topRated.length > 0) {
       startAutoPlay();
     }
-    return () => stopAutoPlay(); // clear interval on unmount or data change
+    return () => stopAutoPlay();
   }, [topRated]);
 
   if (topRated.length === 0) return null;
 
   return (
     <div
-      className="w-full sm:pb-4 pb-0 h-fit overflow-hidden relative  cursor-pointer"
+      className=" w-full xl:h-[93%] lg:h-[75%] h-fit  overflow-hidden relative  cursor-pointer"
       onMouseEnter={() => {
         stopAutoPlay();
         setIsHover(true);
@@ -78,6 +84,9 @@ const SimpleCarousel = () => {
         setIsHover(false);
       }}
     >
+      <div className="tracking-wider lg:text-lg md:text-[16px] text-sm mb-0.5">
+        <span className="text-amber">Top Rated</span> {heading}
+      </div>
       {/* Slide Container */}
       <div
         style={{
@@ -86,6 +95,7 @@ const SimpleCarousel = () => {
           transform: `translateX(-${currentIndex * (100 / topRated.length)}%)`,
           transition: "transform 0.5s ease-in-out",
         }}
+        className="sm:h-fit h-60"
       >
         {topRated?.map((movie, idx) => (
           <div
@@ -121,7 +131,7 @@ const SimpleCarousel = () => {
       {topRated[currentIndex] && (
         <div
           id={topRated[currentIndex].id}
-          className={`md:absolute z-10 md:flex gap-x-4 top-1/4 left-10 text-white transition-all duration-500 opacity-100 translate-y-4 w-full pb-3  ${
+          className={`md:absolute z-10 md:flex lg:gap-x-4 md:gap-x-3 xl:top-1/3 xl:left-30 md:top-1/4 md:left-10  text-white transition-all duration-500 opacity-100 translate-y-4 w-full pb-3  ${
             isHover
               ? "md:opacity-100 md:translate-y-0"
               : "md:opacity-0 md:translate-y-4"
@@ -130,22 +140,22 @@ const SimpleCarousel = () => {
         >
           <div className="poster transform transition-transform duration-500 group-hover:scale-105">
             <img
-              className="w-[148px] h-[220px] hidden md:block rounded-sm shadow-sm shadow-white"
+              className="lg:w-[148px] lg:h-[220px] w-[120px] h-[170px] hidden md:block rounded-sm shadow-sm shadow-white"
               src={`${imageURL?.url}${imageURL?.sizes?.[1]}${topRated[currentIndex].poster}`}
               alt="Poster"
             />
           </div>
-          <div className="md:space-y-4">
+          <div className="lg:space-y-4 md:space-y-2">
             <div className="w-full md:w-fit text-center md:text-left -space-y-2 md:space-y-1">
-              <p className="md:text-3xl text-lg font-bold transform transition-transform duration-500">
+              <p className="lg:text-3xl md:text-2xl text-lg font-bold transform transition-transform duration-500">
                 {topRated[currentIndex].title || "Movie Title"}
               </p>
-              <span className="text-xs sm:text-lg">
+              <span className="text-xs lg:text-lg md:text-sm">
                 Release date: {topRated[currentIndex].release_date || "N/A"}
               </span>
             </div>
 
-            <p className="md:text-sm md:block hidden max-w-xl">
+            <p className="lg:text-sm md:text-xs md:w-xs lg:w-fit md:block hidden max-w-xl">
               {topRated[currentIndex].overview || "N/A"}
             </p>
           </div>

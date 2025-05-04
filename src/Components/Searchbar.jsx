@@ -38,7 +38,7 @@ const Searchbar = () => {
   const debouncedSearch = useRef(
     Debounce(async (value) => {
       let searchResult = await getSearchResult(value);
-      setSearchResult(searchResult.length == 0 ? "" : searchResult);
+      setSearchResult(searchResult.length != 0 && searchResult);
     }, 500)
   ).current;
 
@@ -56,7 +56,7 @@ const Searchbar = () => {
       Search_Ref.current?.focus();
     } else {
       setIsFocus(false);
-      navigate("/");
+      navigate(-1);
     }
   };
   const handleFilter = () => {
@@ -107,14 +107,16 @@ const Searchbar = () => {
   return (
     <div className="w-full flex justify-center">
       <div
-        className={`sm:px-3 px-2 md:bg-neutral-700 bg-none flex justify-between items-center gap-x-2 lg:w-150 md:w-100 w-0 md:rounded-md h-fit lg:py-2 md:py-1 relative ${location.pathname === "/search" && "w-60 "} `}
+        className={`sm:px-3 px-2 md:bg-neutral-700 bg-none flex justify-between items-center gap-x-2 lg:w-150 md:w-100 w-0 md:rounded-md h-fit lg:py-2 md:py-1 relative ${
+          location.pathname === "/search" && "w-60 "
+        } `}
       >
         <span
           onClick={handleClick}
           className={`sm:text-xl text-lg cursor-pointer`}
         >
           {location.pathname === "/search" ? (
-            <IoArrowBack   onClick={() => setSearchItem("")} />
+            <IoArrowBack onClick={() => setSearchItem("")} />
           ) : (
             <FaSearch />
           )}
