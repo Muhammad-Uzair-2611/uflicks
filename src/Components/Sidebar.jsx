@@ -4,14 +4,14 @@ import { MdMovie } from "react-icons/md";
 import { LuTv } from "react-icons/lu";
 import { PiFilmReel } from "react-icons/pi";
 import { FaSkull, FaMasksTheater, FaMap } from "react-icons/fa6";
-import { GiCrossedSwords, GiMonoWheelRobot } from "react-icons/gi";
+import { GiCrossedSwords, GiJesterHat } from "react-icons/gi";
 
 const Sidebar = () => {
   const location = useLocation();
 
   const isCurrentSection = (path) => location.pathname.startsWith(path);
   return (
-    <div className={`md:block hidden h-full md:py-5 sm:py-3 py-2 px-4`}>
+    <div className={`md:block hidden h-full md:py-8 sm:py-4 py-3 `}>
       <ul
         className="lg:space-y-6 md:space-y-3.5  sm:space-y-1 w-40 
         [&>a]:flex 
@@ -82,9 +82,7 @@ const Sidebar = () => {
 
         <NavLink
           to="/action/movies"
-          className={`${
-            isCurrentSection("/action") ? "bg-neutral-600" : ""
-          }`}
+          className={`${isCurrentSection("/action") ? "bg-neutral-600" : ""}`}
         >
           <li>
             <GiCrossedSwords />
@@ -94,9 +92,7 @@ const Sidebar = () => {
 
         <NavLink
           to="/drama/movies"
-          className={`${
-            isCurrentSection("/drama") ? "bg-neutral-600" : ""
-          }`}
+          className={`${isCurrentSection("/drama") ? "bg-neutral-600" : ""}`}
         >
           <li>
             <FaMasksTheater />
@@ -117,14 +113,12 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to="/sci-fi/movies"
-          className={`${
-            isCurrentSection("/sci-fi") ? "bg-neutral-600" : ""
-          }`}
+          to="/comedy/movies"
+          className={`${isCurrentSection("/comedy") ? "bg-neutral-600" : ""}`}
         >
           <li>
-            <GiMonoWheelRobot />
-            <span>Sci-Fi</span>
+            <GiJesterHat />
+            <span>Comedy</span>
           </li>
         </NavLink>
       </ul>

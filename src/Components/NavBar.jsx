@@ -15,7 +15,7 @@ const NavBar = () => {
     <nav className="z-50 sm:sticky top-0 left-0 bg-[#181A1B] w-full py-2 h-fit px-5 flex justify-between items-center">
       <div className="logo">
         <a href="/">
-          <img className="sm:w-15 md:20 w-10" src="./Logo.png" alt="" />
+          <img className="sm:w-15 md:w-19 w-10" src="/Logo.png" alt="" />
         </a>
       </div>
       <div className=" flex text-2xl mb-2 gap-x-5 ">

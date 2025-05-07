@@ -15,8 +15,8 @@ const SearchShow_URL = `search/tv?api_key=${API_KEY}&query=`;
 const genres_URL = `genre/movie/list?api_key=${API_KEY}`;
 const filteredMovies_URL = `discover/movie?api_key=${API_KEY}&with_genres=`;
 const sci_fi_Movies_URL = `discover/movie?api_key=${API_KEY}&with_genres=878`;
-const animated_Shows_URL = `discover/tv?api_key=${API_KEY}&with_genres=16`;
-const animated_Movies_URL = `discover/movie?api_key=${API_KEY}&with_genres=16`;
+const movies_Category_URL = `discover/movie?api_key=${API_KEY}&with_genres=`;
+const shows_Category_URL = `discover/tv?api_key=${API_KEY}&with_genres=`;
 const airingToday_URL = `tv/airing_today?api_key=${API_KEY}`;
 const onGoingShows_URL = `tv/on_the_air?api_key=${API_KEY}`;
 
@@ -113,11 +113,14 @@ const getMoviesWithPage = async (url) => {
       const response = fetch.data.results;
 
       const movies = response
-        .filter((movie) => movie.poster_path != null && movie.overview !== "")
+        .filter(
+          (movie) => movie.poster_path != null && movie.backdrop_path !== null
+        )
         .map((movie) => ({
           id: movie.id,
           title: movie.title,
           release_date: movie.release_date,
+          banner: movie.backdrop_path,
           poster: movie.poster_path,
           overview: movie.overview,
         }));
@@ -141,15 +144,13 @@ const getShowsWithPage = async (url) => {
 
       const shows = response
         .filter(
-          (movie) =>
-            movie.poster_path != null &&
-            movie.backdrop_path != null &&
-            movie.overview !== ""
+          (movie) => movie.poster_path != null && movie.backdrop_path != null
         )
         .map((movie) => ({
           id: movie.id,
           title: movie.name,
           release_date: movie.first_air_date,
+          banner: movie.backdrop_path,
           poster: movie.poster_path,
           overview: movie.overview,
         }));
@@ -188,11 +189,49 @@ export const getTopRatedMovies = async () => {
 };
 
 export const getAnimatedMovies = async () => {
-  return getMoviesWithPage(animated_Movies_URL);
+  return getMoviesWithPage(movies_Category_URL + 16);
 };
 
 export const getAnimatedShows = async () => {
-  return getShowsWithPage(animated_Shows_URL);
+  return getShowsWithPage(shows_Category_URL + 16);
+};
+export const getActionMovies = async () => {
+  return getMoviesWithPage(movies_Category_URL + 28);
+};
+
+export const getActionShows = async () => {
+  return getShowsWithPage(shows_Category_URL + 10759);
+};
+export const getHorrorMovies = async () => {
+  return getMoviesWithPage(movies_Category_URL + 27);
+};
+
+export const getHorrorShows = async () => {
+  return getShowsWithPage(shows_Category_URL + 27);
+};
+
+export const getDramaMovies = async () => {
+  return getMoviesWithPage(movies_Category_URL + 18);
+};
+
+export const getDramaShows = async () => {
+  return getShowsWithPage(shows_Category_URL + 18);
+};
+
+export const getAdventureMovies = async () => {
+  return getMoviesWithPage(movies_Category_URL + 12);
+};
+
+export const getAdventureShows = async () => {
+  return getShowsWithPage(shows_Category_URL + 10759);
+};
+
+export const getComedyMovies = async () => {
+  return getMoviesWithPage(movies_Category_URL + 35);
+};
+
+export const getComedyShows = async () => {
+  return getShowsWithPage(shows_Category_URL + 35);
 };
 
 export const getTodayShows = async () => {

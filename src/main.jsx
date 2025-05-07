@@ -12,6 +12,17 @@ import Movie_Sugesstions from "./Components/Movie_Sugesstions.jsx";
 import MoviesPage from "./Pages/MoviesPage.jsx";
 import CategoryPage from "./Pages/CategoryPage.jsx";
 
+const categories = ["animations", "action", "adventure", "horror", "drama", "comedy"];
+const types = ["movies", "shows"];
+
+const categoryRoutes = categories.flatMap((category) =>
+  types.map((type) => ({
+    path: `${category}/${type}`,
+    element: <CategoryPage />,
+    handle: { hide_navbar: false },
+  }))
+);
+
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -33,16 +44,7 @@ const routes = createBrowserRouter([
         element: <MoviesPage />,
         handle: { hide_navbar: false },
       },
-      {
-        path: "animations/movies",
-        element: <CategoryPage />,
-        handle: { hide_navbar: false },
-      },
-      {
-        path: "animations/shows",
-        element: <CategoryPage />,
-        handle: { hide_navbar: false },
-      },
+      ...categoryRoutes,
       {
         path: "movieInfo",
         element: <MovieInfo />,

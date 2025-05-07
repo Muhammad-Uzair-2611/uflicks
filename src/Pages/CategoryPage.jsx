@@ -6,8 +6,20 @@ import { useMovieInfo } from "../Context/MovieInfoContext";
 import {
   getAnimatedMovies,
   getAnimatedShows,
+  getActionMovies,
+  getActionShows,
+  getHorrorMovies,
+  getHorrorShows,
+  getDramaMovies,
+  getDramaShows,
+  getAdventureMovies,
+  getAdventureShows,
+  getComedyMovies,
+  getComedyShows,
   getImageURL,
 } from "../services/movie_api";
+import ScrollToTop from "../Components/ScrollToTop";
+
 const CategoryPage = () => {
   //*States
   const [data, setData] = useState([]);
@@ -15,6 +27,7 @@ const CategoryPage = () => {
   const [error, setError] = useState(null);
   const { setIsAllowed, isAllowed, setMovieId } = useMovieInfo();
   const [visibleCardCount, setVisibleCardCount] = useState(5);
+  const [category, setCategory] = useState("");
   const firstRenderedCard = useRef(null);
   const lastRenderedCard = useRef(null);
   const [ImageURL, setImageURL] = useState();
@@ -23,42 +36,73 @@ const CategoryPage = () => {
 
   //*Effects
   useEffect(() => {
-    try {
-      setLoading(true);
-      setError(null);
-      async function fetchAnimated() {
+    let isMounted = true;
+
+    setLoading(true);
+    setError(null);
+
+    async function fetchData() {
+      try {
         document.body.style.overflow = "hidden";
-        let path = location.pathname;
-        let [category, type] = path.split("/").slice(1);
+        const path = location.pathname;
+        const [category, type] = path.split("/").slice(1);
+        setCategory(category);
 
         const fetchMap = {
           animations: {
             movies: getAnimatedMovies,
             shows: getAnimatedShows,
           },
-          // action: {
-          //   movies: getActionMovies,
-          //   shows: getActionShows,
-          // },
-          // horror: {
-          //   movies: getHorrorMovies,
-          //   shows: getHorrorShows,
-          // },
+          action: {
+            movies: getActionMovies,
+            shows: getActionShows,
+          },
+          horror: {
+            movies: getHorrorMovies,
+            shows: getHorrorShows,
+          },
+          drama: {
+            movies: getDramaMovies,
+            shows: getDramaShows,
+          },
+          adventure: {
+            movies: getAdventureMovies,
+            shows: getAdventureShows,
+          },
+          comedy: {
+            movies: getComedyMovies,
+            shows: getComedyShows,
+          },
         };
-        const promise = fetchMap[category]?.[type];
-        const [data, imageURL] = Promise.all([promise, getImageURL()]);
-        setData(data);
-        setImageURL(imageURL);
-      }
 
-      fetchAnimated();
-    } catch (err) {
-      setError(err.message);
-      console.error("Error fetching content:", err);
-    } finally {
-      setLoading(false);
+        const penPromise = fetchMap[category]?.[type]?.();
+
+        const [data, imageURL] = await Promise.all([penPromise, getImageURL()]);
+
+        if (isMounted) {
+          setData(data);
+          setImageURL(imageURL);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message);
+          console.error("Error fetching content:", err);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
     }
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+      document.body.style.overflow = "auto";
+    };
   }, [location.pathname]);
+
   useEffect(() => {
     if (visibleCardCount >= data.length) return;
     const lastCardObserver = new IntersectionObserver((entries) => {
@@ -80,7 +124,7 @@ const CategoryPage = () => {
     }
 
     return () => {
-      if (lastRenderedCard.current) {
+      if (lastRenderedCard.current && firstRenderedCard.current) {
         firstCardObserver.unobserve(firstRenderedCard.current);
         lastCardObserver.unobserve(lastRenderedCard.current);
       }
@@ -125,27 +169,6 @@ const CategoryPage = () => {
     },
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <motion.div
-          className="flex flex-col items-center gap-4"
-          variants={loadingVariants}
-          animate="animate"
-        >
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-          <motion.p
-            className="text-xl text-gray-600"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            Loading...
-          </motion.p>
-        </motion.div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-neutral-950 px-4">
@@ -176,84 +199,125 @@ const CategoryPage = () => {
   }
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full px-3">
       <Sidebar />
-      <div className="w-full h-full ">
-        <div
-          className="space-x-6 text-xl  py-3 [&>a]:cursor-pointer [&_span]:text-[#f3b00c] 
-        [&>a]:tracking-widest"
-        >
-          <NavLink
-            to={"/animations/movies"}
-            className={({ isActive }) =>
-              isActive
-                ? "border-b-3 rounded-b-xs transition-all pb-0  border-gray-300"
-                : "pb-1"
-            }
-          >
-            <span>Movies</span>
-          </NavLink>
-          <NavLink
-            to={"/animations/shows"}
-            className={({ isActive }) =>
-              isActive
-                ? "border-b-3 rounded-b-xs transition-all pb-0  border-gray-300"
-                : "pb-1"
-            }
-          >
-            <span>Shows</span>
-          </NavLink>
-        </div>
-        <AnimatePresence>
+      {loading ? (
+        <div className=" min-h-screen min-w-220  flex items-center justify-center">
           <motion.div
-            className="h-[80vh] overflow-y-scroll  pr-2"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+            className="flex flex-col items-center gap-4"
+            variants={loadingVariants}
+            animate="animate"
           >
-            {data?.length > 0 &&
-              data.slice(0, visibleCardCount).map((movie, index) => (
-                <motion.div
-                  key={movie.id}
-                  id={movie.id}
-                  ref={
-                    index === visibleCardCount - 1
-                      ? lastRenderedCard
-                      : index === 0
-                      ? firstRenderedCard
-                      : null
-                  }
-                  onClick={handleClick}
-                  className="sm:bg-[#2b2b2b] bg-none sm:w-full w-fit flex sm:mb-3 mb-0 sm:py-3 p-0 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer h-fit"
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                >
-                  <div className="md:min-w-30 md:w-30 md:h-45 sm:min-w-28 sm:w-28 sm:h-40 w-25 h-37 overflow-hidden rounded-lg bg-no-repeat bg-cover shadow-sm shadow-gray-500">
-                    <img
-                      loading="lazy"
-                      src={`${ImageURL.url}${ImageURL.sizes[1]}${movie.poster}`}
-                      alt=""
-                    />
-                  </div>
-                  <div className="">
-                    <div className="mb-4">
-                      <div className="font-semibold md:text-xl sm:text-lg hidden sm:block mb-2">
-                        {movie.title}
-                      </div>
-                      <span className="md:text-[16px] sm:text-sm hidden sm:block text-neutral-300">
-                        {movie.release_date}
-                      </span>
-                    </div>
-                    <p className="md:text-sm sm:text-xs sm:block hidden">
-                      {movie.overview}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
+            <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <motion.p
+              className="text-xl text-gray-600"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              Loading...
+            </motion.p>
           </motion.div>
-        </AnimatePresence>
-      </div>
+        </div>
+      ) : (
+        <div className="w-full h-full ">
+          <div
+            className="space-x-6 sm:text-xl  px-3  py-3 [&>a]:cursor-pointer [&_span]:text-[#f3b00c] 
+        [&>a]:tracking-widest"
+          >
+            <NavLink
+              to={`/${category}/movies`}
+              className={({ isActive }) =>
+                isActive
+                  ? "border-b-3 rounded-b-xs transition-all pb-0 border-gray-300"
+                  : "pb-1"
+              }
+            >
+              <span>Movies</span>
+            </NavLink>
+            {category !== "horror" && (
+              <NavLink
+                to={`/${category}/shows`}
+                className={({ isActive }) =>
+                  isActive
+                    ? "border-b-3 rounded-b-xs transition-all pb-1  border-gray-300"
+                    : "pb-0"
+                }
+              >
+                <span>Shows</span>
+              </NavLink>
+            )}
+            {/* <button onClick={() => getConsole()} className="p-3 cursor-pointer">
+            click me{" "}
+          </button> */}
+          </div>
+          <AnimatePresence>
+            <motion.div
+              className="h-[80vh] overflow-y-scroll sm:px-3  px-1"
+              data-scroll-reset
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {data.length > 0 &&
+                data.slice(0, visibleCardCount).map((movie, index) => (
+                  <motion.div
+                    key={movie.id}
+                    id={movie.id}
+                    ref={
+                      index === visibleCardCount - 1
+                        ? lastRenderedCard
+                        : index === 0
+                        ? firstRenderedCard
+                        : null
+                    }
+                    onClick={handleClick}
+                    style={{
+                      backgroundImage: `url(${ImageURL.url}${ImageURL.sizes[4]}${movie.banner})`,
+                      backgroundSize: "cover",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                    }}
+                    className={`relative min-h-40 w-full flex my-3 py-3 px-3 rounded-lg cursor-pointer h-fit`}
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                  >
+                    <div
+                      className={`absolute z-0 bg-black/30 inset-0  duration-700 md:bg-none
+                transition-opacity`}
+                    />
+                    <div className="flex z-10 gap-x-3 text-gray-200">
+                      <div className="w-fit h-full flex items-center">
+                        <div className="md:min-w-[7.5rem] md:w-[7.5rem] md:h-[11.25rem] sm:min-w-[7rem] sm:w-[7rem] sm:h-[10rem] w-[6.25rem] h-[8rem] rounded-lg shadow-md shadow-black overflow-hidden ">
+                          <img
+                            loading="lazy"
+                            src={`${ImageURL.url}${ImageURL.sizes[1]}${movie.poster}`}
+                            alt=""
+                            className="w-full h-full object-fill"
+                          />
+                        </div>
+                      </div>
+                      <div className="">
+                        <div className="mb-4">
+                          <div className="font-semibold md:text-xl sm:text-lg hidden sm:block mb-2">
+                            {movie.title}
+                          </div>
+                          <span className="md:text-[16px] sm:text-sm hidden sm:block text-neutral-300">
+                            {movie.release_date}
+                          </span>
+                        </div>
+                        <p className="md:text-sm sm:text-xs sm:block hidden">
+                          {movie.overview || "Overview not available."}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      )}
+      <ScrollToTop />
     </div>
   );
 };
