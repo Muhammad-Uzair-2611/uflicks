@@ -124,9 +124,7 @@ const Sliders = () => {
     JSON.stringify(sessionStorage.setItem("isAllowed", isAllowed));
   }, [isAllowed]);
 
-  useEffect(() => {
-    if (isFocus) navigate("/search");
-  }, [isFocus]);
+ 
 
   //*Functions
   const handleclick = useCallback((direction, e) => {

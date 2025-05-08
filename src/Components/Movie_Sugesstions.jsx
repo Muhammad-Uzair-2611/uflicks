@@ -3,7 +3,7 @@ import { getImageURL, getFliteredMovies } from "../services/movie_api";
 import { useSearch } from "../Context/Searchcontext";
 import { useMovieInfo } from "../Context/MovieInfoContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, NavLink } from "react-router-dom";
 
 const Movie_Sugesstions = () => {
   //*States & Refrences
@@ -14,9 +14,11 @@ const Movie_Sugesstions = () => {
   const { searchItem, searchResult, filter } = useSearch();
   const { setIsAllowed, isAllowed, setMovieId } = useMovieInfo();
   const [currentMovies, setCurrentMovies] = useState([]);
+  const [category, setCategory] = useState("");
   const lastRenderedCard = useRef(null);
   const firstRenderedCard = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   //*Effects
   useEffect(() => {
@@ -25,10 +27,11 @@ const Movie_Sugesstions = () => {
         setIsAllowed(false);
         setLoading(true);
         setError(null);
+        let [path] = location.pathname.split("/").slice(1);
+        setCategory(path);
         const imageURl = await getImageURL();
         setImageURL(imageURl);
         const movies = await getFliteredMovies("28,12,878");
-        console.log(movies);
         setCurrentMovies(movies);
       } catch (err) {
         setError(err.message);
@@ -60,13 +63,18 @@ const Movie_Sugesstions = () => {
   }, [filter]);
 
   useEffect(() => {
-    if (searchItem === "") {
+    if (searchItem == "") {
       async function fetch() {
-        const movies = await getFliteredMovies("28,12,878");
+        const movies = await getFliteredMovies(filter?.id || "28,12,878");
+        console.log(movies);
         setCurrentMovies(movies);
       }
       fetch();
     }
+    if (searchResult.length <= 0) {
+      setCurrentMovies([]);
+    }
+
     setCurrentMovies(searchResult);
 
     setVisibleCardCount(10);
@@ -226,14 +234,45 @@ const Movie_Sugesstions = () => {
   return (
     <div className="mt-10 ">
       <motion.div
-        className="sm:text-2xl text-xl w-fit sm:mb-5 mb-3 sm:px-4 px-2 font-semibold"
+        className="sm:text-2xl w-[96vw]  text-xl flex justify-between items-center sm:mb-2 mb-3 sm:px-4 px-2 font-semibold"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {searchItem === ""
-          ? `${filter?.name || `Discover`}`
-          : `Search Results: ${searchResult?.length || 0}`}
+        {currentMovies.length > 0 && (
+          <div
+            className="space-x-6 sm:text-xl  px-3  py-3 [&>a]:cursor-pointer [&_span]:text-[#f3b00c] 
+  [&>a]:tracking-widest"
+          >
+            <NavLink
+              to={`/${category}/movies`}
+              className={({ isActive }) =>
+                isActive
+                  ? "border-b-3 rounded-b-xs transition-all pb-0 border-gray-300"
+                  : "pb-1"
+              }
+            >
+              <span>Movies</span>
+            </NavLink>
+            {category !== "horror" && (
+              <NavLink
+                to={`/${category}/shows`}
+                className={({ isActive }) =>
+                  isActive
+                    ? "border-b-3 rounded-b-xs transition-all pb-1  border-gray-300"
+                    : "pb-0"
+                }
+              >
+                <span>Shows</span>
+              </NavLink>
+            )}
+          </div>
+        )}
+        {searchItem === "" ? (
+          <div>{filter?.name || `Discover`}</div>
+        ) : (
+          <div>Search Results: {searchResult?.length || 0}</div>
+        )}
       </motion.div>
       <motion.div
         className={`sm:px-4 px-2 mb-2  gap-y-8 gap-x-4 sm:block ${
@@ -245,61 +284,59 @@ const Movie_Sugesstions = () => {
       >
         <AnimatePresence>
           {currentMovies.length > 0 ? (
-            currentMovies.slice(0, visibleCardCount).map((movie, index) =>
-              movie.poster != null && movie.overview !== "" ? (
-                <motion.div
-                  key={movie.id}
-                  id={movie.id}
-                  onClick={handleClick}
-                  style={{
-                    backgroundImage: `url(${ImageURL.url}${ImageURL.sizes[5]}${movie.banner})`,
-                    backgroundSize: "cover",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                  }}
-                  className="sm:bg-[#2b2b2b] relative bg-none sm:w-full w-fit flex sm:mb-6 mb-0 sm:py-2 p-0 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer shadow-md shadow-gray-600"
-                  ref={
-                    index === visibleCardCount - 1
-                      ? lastRenderedCard
-                      : index === 0
-                      ? firstRenderedCard
-                      : null
-                  }
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                >
-                  <div
-                    className={`absolute z-0 bg-black/40 inset-0  duration-700 md:bg-none
+            currentMovies.slice(0, visibleCardCount).map((movie, index) => (
+              <motion.div
+                key={movie.id}
+                id={movie.id}
+                onClick={handleClick}
+                style={{
+                  backgroundImage: `url(${ImageURL?.url}${ImageURL?.sizes[5]}${movie.banner})`,
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                }}
+                className="relative bg-none sm:w-full w-fit flex sm:mb-6 mb-0 sm:py-2 p-0 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer shadow-md shadow-gray-600"
+                ref={
+                  index === visibleCardCount - 1
+                    ? lastRenderedCard
+                    : index === 0
+                    ? firstRenderedCard
+                    : null
+                }
+                variants={itemVariants}
+                whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+                exit={{ opacity: 0, scale: 0.8 }}
+              >
+                <div
+                  className={`absolute z-0 bg-black/40 inset-0  duration-700 md:bg-none
                 transition-opacity`}
-                  />
-                  <div className="flex z-10 gap-x-3 text-gray-200">
-                    <div className="flex z-10 gap-x-3 ">
-                      <div className="md:min-w-30 md:w-30 md:h-45 sm:min-w-28 sm:w-28 sm:h-40 w-25 h-37 overflow-hidden rounded-lg bg-no-repeat bg-cover shadow-md shadow-black">
-                        <img
-                          loading="lazy"
-                          src={`${ImageURL.url}${ImageURL.sizes[1]}${movie.poster}`}
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                    <div className="">
-                      <div className="mb-4">
-                        <div className="font-semibold md:text-xl sm:text-lg hidden sm:block mb-2">
-                          {movie.title}
-                        </div>
-                        <span className="md:text-[16px] sm:text-sm hidden sm:block text-neutral-300">
-                          {movie.release_date}
-                        </span>
-                      </div>
-                      <p className="md:text-sm sm:text-xs sm:block hidden">
-                        {movie.overview}
-                      </p>
+                />
+                <div className="flex z-10 gap-x-3 text-gray-200">
+                  <div className="flex z-10 gap-x-3 ">
+                    <div className="md:min-w-30 md:w-30 md:h-45 sm:min-w-28 sm:w-28 sm:h-40 w-25 h-37 overflow-hidden rounded-lg bg-no-repeat bg-cover shadow-md shadow-black">
+                      <img
+                        loading="lazy"
+                        src={`${ImageURL?.url}${ImageURL?.sizes[1]}${movie?.poster}`}
+                        alt=""
+                      />
                     </div>
                   </div>
-                </motion.div>
-              ) : null
-            )
+                  <div className="">
+                    <div className="mb-4">
+                      <div className="font-semibold md:text-xl sm:text-lg hidden sm:block mb-2">
+                        {movie.title}
+                      </div>
+                      <span className="md:text-[16px] sm:text-sm hidden sm:block text-neutral-300">
+                        {movie.release_date}
+                      </span>
+                    </div>
+                    <p className="md:text-sm sm:text-xs sm:block hidden">
+                      {movie?.overview || "Overview Not Avialable."}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))
           ) : (
             <motion.div
               className="min-h-[50vh] w-full  flex flex-col items-center justify-center gap-6 p-4"

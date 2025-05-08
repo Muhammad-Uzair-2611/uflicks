@@ -35,6 +35,7 @@ const SimpleCarousel = () => {
     setMovieId(movieID);
     setIsAllowed(true);
     navigate("/movieinfo");
+    
   };
 
   //*Effects

@@ -13,27 +13,30 @@ const MovieInfo = () => {
 
   useEffect(() => {
     async function getMovieById() {
-      !isAllowed && navigate("/");
+      !isAllowed && navigate(-1);
       const response = await getMoviebyID(movieId);
       const imageURl = await getImageURL();
       setImageURL(imageURl);
       setMovieInfo(response);
       JSON.stringify(sessionStorage.setItem("isAllowed", isAllowed));
+      console.log(
+        imageURl.url + " " + imageURl.banner_sizes[2] + "  " + response.banner
+      );
     }
     getMovieById();
   }, []);
 
   return (
     <div className="relative">
-      <div className="backImage w-fit h-fit blur-xs absolute -z-10">
+      <div className="backImage w-fit h-screen blur-xs absolute -z-10 border">
         <img
           className="w-full h-full"
           src={`${ImageURL?.url}${ImageURL?.banner_sizes[3]}${movieInfo.banner}`}
           alt=""
         />
       </div>
-      <div className="h-50  px-3 py-2">
-        <span onClick={() => navigate("/")} className="text-4xl cursor-pointer">
+      <div className="h-50 border  px-3 py-2">
+        <span onClick={() => navigate(-1)} className="text-4xl cursor-pointer">
           <IoArrowBack />
         </span>
       </div>

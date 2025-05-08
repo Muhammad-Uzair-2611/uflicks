@@ -47,7 +47,7 @@ const Searchbar = () => {
   const debouncedSearch = useRef(
     Debounce(async (value) => {
       let searchResult = await getSearchResult(value);
-      setSearchResult(searchResult.length != 0 && searchResult);
+      setSearchResult(searchResult);
     }, 500)
   ).current;
 

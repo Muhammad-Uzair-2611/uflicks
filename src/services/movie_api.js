@@ -58,6 +58,7 @@ const getMovies = async (url) => {
   try {
     const fetch = await axios.get(`${BASE_URL}${url}`);
     const response = fetch.data.results;
+    console.log(response);
     return response
       .filter(
         (movie) =>
@@ -254,11 +255,14 @@ export const getSearchResult = async (query) => {
     const response = [...fetch.data.results, ...fetch2.data.results];
 
     return response
-      .filter((movie) => movie.poster_path != null && movie.overview !== "")
+      .filter(
+        (movie) => movie.poster_path != null && movie.backdrop_path != null
+      )
       .map((movie) => ({
         id: movie.id,
         title: movie.name ? movie.name : movie.title,
         release_date: movie.first_air_date || movie.release_date,
+        banner: movie.backdrop_path,
         poster: movie.poster_path,
         overview: movie.overview,
       }));
