@@ -272,8 +272,7 @@ const Sliders = () => {
     <>
       {/* //! Trending Movies */}
       <motion.div
-        className="mt-5 flex ite
-        ms-center sm:pr-5"
+        className="mt-5 flex items-center space-x-2 sm:pr-5"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -347,7 +346,7 @@ const Sliders = () => {
       </motion.div>
       {/* //! Playing Now */}
       <motion.div
-        className="mt-5 flex items-center sm:pr-5"
+        className="mt-5 flex items-center space-x-2 sm:pr-5"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -419,7 +418,7 @@ const Sliders = () => {
       </motion.div>
       {/* //! Today Airing */}
       <motion.div
-        className="mt-5 flex items-center md:pr-5"
+        className="mt-5 flex items-center space-x-2 md:pr-5"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -491,7 +490,7 @@ const Sliders = () => {
       </motion.div>
       {/* //! Popular Shoews*/}
       <motion.div
-        className="mt-5 flex items-center md:pr-5"
+        className="mt-5 flex items-center space-x-2 md:pr-5"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}

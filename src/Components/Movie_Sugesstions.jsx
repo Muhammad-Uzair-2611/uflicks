@@ -15,6 +15,7 @@ const Movie_Sugesstions = () => {
   const { setIsAllowed, isAllowed, setMovieId } = useMovieInfo();
   const [currentMovies, setCurrentMovies] = useState([]);
   const lastRenderedCard = useRef(null);
+  const firstRenderedCard = useRef(null);
   const navigate = useNavigate();
 
   //*Effects
@@ -27,6 +28,7 @@ const Movie_Sugesstions = () => {
         const imageURl = await getImageURL();
         setImageURL(imageURl);
         const movies = await getFliteredMovies("28,12,878");
+        console.log(movies);
         setCurrentMovies(movies);
       } catch (err) {
         setError(err.message);
@@ -37,6 +39,25 @@ const Movie_Sugesstions = () => {
     }
     fetchData();
   }, []);
+  useEffect(() => {
+    async function fetchMovies() {
+      setLoading(true);
+      try {
+        if (filter.id) {
+          setCurrentMovies([]);
+          const movies = await getFliteredMovies(filter?.id);
+          setCurrentMovies(movies);
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching content:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchMovies();
+  }, [filter]);
 
   useEffect(() => {
     if (searchItem === "") {
@@ -53,20 +74,28 @@ const Movie_Sugesstions = () => {
 
   useEffect(() => {
     if (visibleCardCount >= currentMovies.length) return;
-    const observer = new IntersectionObserver((entries) => {
+    const lastCardObserver = new IntersectionObserver((entries) => {
       const entry1 = entries[0];
       if (entry1.isIntersecting) {
         setVisibleCardCount((prev) => prev + 10);
       }
     });
+    const firstCardObserver = new IntersectionObserver((entries) => {
+      const entry1 = entries[0];
+      if (entry1.isIntersecting) {
+        setVisibleCardCount(10);
+      }
+    });
 
-    if (lastRenderedCard.current) {
-      observer.observe(lastRenderedCard.current);
+    if (lastRenderedCard.current && firstRenderedCard.current) {
+      firstCardObserver.observe(firstRenderedCard.current);
+      lastCardObserver.observe(lastRenderedCard.current);
     }
 
     return () => {
-      if (lastRenderedCard.current) {
-        observer.unobserve(lastRenderedCard.current);
+      if (lastRenderedCard.current && firstRenderedCard.current) {
+        firstCardObserver.unobserve(firstRenderedCard.current);
+        lastCardObserver.unobserve(lastRenderedCard.current);
       }
     };
   }, [visibleCardCount, currentMovies.length]);
@@ -203,11 +232,11 @@ const Movie_Sugesstions = () => {
         transition={{ duration: 0.5 }}
       >
         {searchItem === ""
-          ? `${filter.name ? `${filter.name}` : `Discover`}`
+          ? `${filter?.name || `Discover`}`
           : `Search Results: ${searchResult?.length || 0}`}
       </motion.div>
       <motion.div
-        className={`sm:px-4 px-2 mb-2 sm:gap-y-8 gap-y-8 gap-x-4 sm:block ${
+        className={`sm:px-4 px-2 mb-2  gap-y-8 gap-x-4 sm:block ${
           currentMovies.length > 0 && "grid grid-cols-3"
         } `}
         variants={containerVariants}
@@ -222,31 +251,51 @@ const Movie_Sugesstions = () => {
                   key={movie.id}
                   id={movie.id}
                   onClick={handleClick}
-                  className="sm:bg-[#2b2b2b] bg-none sm:w-full w-fit flex sm:mb-3 mb-0 sm:py-2 p-0 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer"
-                  ref={index === visibleCardCount - 1 ? lastRenderedCard : null}
+                  style={{
+                    backgroundImage: `url(${ImageURL.url}${ImageURL.sizes[5]}${movie.banner})`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                  }}
+                  className="sm:bg-[#2b2b2b] relative bg-none sm:w-full w-fit flex sm:mb-6 mb-0 sm:py-2 p-0 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer shadow-md shadow-gray-600"
+                  ref={
+                    index === visibleCardCount - 1
+                      ? lastRenderedCard
+                      : index === 0
+                      ? firstRenderedCard
+                      : null
+                  }
                   variants={itemVariants}
                   whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
                   exit={{ opacity: 0, scale: 0.8 }}
                 >
-                  <div className="md:min-w-30 md:w-30 md:h-45 sm:min-w-28 sm:w-28 sm:h-40 w-25 h-37 overflow-hidden rounded-lg bg-no-repeat bg-cover shadow-sm shadow-gray-500">
-                    <img
-                      loading="lazy"
-                      src={`${ImageURL.url}${ImageURL.sizes[1]}${movie.poster}`}
-                      alt=""
-                    />
-                  </div>
-                  <div className="">
-                    <div className="mb-4">
-                      <div className="font-semibold md:text-xl sm:text-lg hidden sm:block mb-2">
-                        {movie.title}
+                  <div
+                    className={`absolute z-0 bg-black/40 inset-0  duration-700 md:bg-none
+                transition-opacity`}
+                  />
+                  <div className="flex z-10 gap-x-3 text-gray-200">
+                    <div className="flex z-10 gap-x-3 ">
+                      <div className="md:min-w-30 md:w-30 md:h-45 sm:min-w-28 sm:w-28 sm:h-40 w-25 h-37 overflow-hidden rounded-lg bg-no-repeat bg-cover shadow-md shadow-black">
+                        <img
+                          loading="lazy"
+                          src={`${ImageURL.url}${ImageURL.sizes[1]}${movie.poster}`}
+                          alt=""
+                        />
                       </div>
-                      <span className="md:text-[16px] sm:text-sm hidden sm:block text-neutral-300">
-                        {movie.release_date}
-                      </span>
                     </div>
-                    <p className="md:text-sm sm:text-xs sm:block hidden">
-                      {movie.overview}
-                    </p>
+                    <div className="">
+                      <div className="mb-4">
+                        <div className="font-semibold md:text-xl sm:text-lg hidden sm:block mb-2">
+                          {movie.title}
+                        </div>
+                        <span className="md:text-[16px] sm:text-sm hidden sm:block text-neutral-300">
+                          {movie.release_date}
+                        </span>
+                      </div>
+                      <p className="md:text-sm sm:text-xs sm:block hidden">
+                        {movie.overview}
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
               ) : null

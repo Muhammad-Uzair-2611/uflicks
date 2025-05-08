@@ -25,6 +25,15 @@ const Searchbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const ExcludedCategories = [
+    "Animation",
+    "Horror",
+    "Action",
+    "Drama",
+    "Adventure",
+    "Comedy",
+  ];
+
   //*Functionss
   const Debounce = (func, delay) => {
     let timeout;
@@ -133,6 +142,30 @@ const Searchbar = () => {
           type="search"
           placeholder="Search Movie By Title."
         />
+        <span ref={filterBtn}>
+          <FaFilter onClick={handleFilter} className="text-lg cursor-pointer" />
+        </span>
+        {showFilters && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            onClick={handleFilterSelect}
+            ref={filterDivRef}
+            className="h-fit w-fit
+         shadow-sm shadow-gray-400 bg-neutral-950 absolute sm:right-4 right-2 sm:-bottom-58 -bottom-60 grid grid-cols-3 gap-4 rounded-md py-3 sm:px-4 px-2 [&>div]:flex [&>div]:gap-x-2 z-10 [&>div>input]:cursor-pointer sm:[&>div]:text-lg [&>div]:text-[10px]"
+          >
+            {genres
+              .filter((genre) => !ExcludedCategories.includes(genre.name))
+              .map((genre) => (
+                <div className="genresName" key={genre.id}>
+                  <input type="radio" id={genre.id} name="option" />
+                  {genre.name == "Science Fiction" ? "Sci-Fi" : genre.name}
+                </div>
+              ))}
+          </motion.div>
+        )}
       </div>
     </div>
   );
