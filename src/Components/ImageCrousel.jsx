@@ -35,7 +35,6 @@ const SimpleCarousel = () => {
     setMovieId(movieID);
     setIsAllowed(true);
     navigate("/movieinfo");
-    
   };
 
   //*Effects
@@ -55,8 +54,7 @@ const SimpleCarousel = () => {
       const [imageURL, topRated] = await Promise.all([getImageURL(), promise]);
       setImageURL(imageURL);
       setTopRated(topRated);
-      console.lg
-     
+      console.lg;
     }
 
     fetchData();
@@ -96,7 +94,7 @@ const SimpleCarousel = () => {
           transform: `translateX(-${currentIndex * (100 / topRated.length)}%)`,
           transition: "transform 0.5s ease-in-out",
         }}
-        className="sm:h-fit h-60"
+        className="sm:h-fit h-52 "
       >
         {topRated?.map((movie, idx) => (
           <div
@@ -106,10 +104,10 @@ const SimpleCarousel = () => {
             style={{
               width: `${100 / topRated.length}%`,
               flexShrink: 0,
-              height: "100%",
               position: "relative",
               borderRadius: "10px",
             }}
+            className="sm:h-full h-50"
           >
             <img
               src={`${imageURL?.url}${imageURL?.banner_sizes?.[1]}${movie.banner}`}
@@ -132,11 +130,12 @@ const SimpleCarousel = () => {
       {topRated[currentIndex] && (
         <div
           id={topRated[currentIndex].id}
-          className={`md:absolute z-10 md:flex lg:gap-x-4 md:gap-x-3 xl:top-1/3 xl:left-30 md:top-1/4 md:left-10  text-white transition-all duration-500 opacity-100 translate-y-4 w-full pb-3  ${
-            isHover
-              ? "md:opacity-100 md:translate-y-0"
-              : "md:opacity-0 md:translate-y-4"
-          }`}
+          className={`md:absolute z-10 md:flex lg:gap-x-4 md:gap-x-3 xl:top-1/3 xl:left-30 
+            md:top-1/4 md:left-10 text-white transition-all duration-500 opacity-100 sm:translate-y-4 w-full pb-3  ${
+              isHover
+                ? "md:opacity-100 md:translate-y-0"
+                : "md:opacity-0 md:translate-y-4"
+            }`}
           onClick={handleClick}
         >
           <div className="poster transform transition-transform duration-500 group-hover:scale-105">

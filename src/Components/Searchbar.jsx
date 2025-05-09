@@ -11,6 +11,7 @@ const Searchbar = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(null);
+
   const {
     isFocus,
     setIsFocus,
@@ -60,12 +61,14 @@ const Searchbar = () => {
     }
   };
   const handleClick = () => {
-    if (!isFocus) {
+    if (isFocus != true) {
       navigate("/search");
+      setSearchItem("");
       Search_Ref.current?.focus();
     } else {
+      setSearchItem("");
       setIsFocus(false);
-      navigate(-1);
+      navigate("/");
     }
   };
   const handleFilter = () => {
@@ -116,19 +119,14 @@ const Searchbar = () => {
   return (
     <div className="w-full flex justify-center">
       <div
-        className={`sm:px-3 px-2 md:bg-neutral-700 bg-none flex justify-between items-center gap-x-2 lg:w-150 md:w-100 w-0 md:rounded-md h-fit lg:py-2 md:py-1 relative ${
-          location.pathname === "/search" && "w-60 "
-        } `}
+        className={`sm:px-3 px-2 bg-neutral-700 flex justify-between items-center gap-x-2 lg:w-150 md:w-100 w-[90%] rounded-md h-fit lg:py-2 md:py-1 relative           
+        `}
       >
         <span
           onClick={handleClick}
-          className={`sm:text-xl text-lg cursor-pointer`}
+          className={`sm:text-xl md:text-lg text-sm cursor-pointer`}
         >
-          {location.pathname === "/search" ? (
-            <IoArrowBack onClick={() => setSearchItem("")} />
-          ) : (
-            <FaSearch />
-          )}
+          {isFocus ? <IoArrowBack /> : <FaSearch />}
         </span>
         <input
           ref={Search_Ref}
@@ -143,7 +141,10 @@ const Searchbar = () => {
           placeholder="Search Movie By Title."
         />
         <span ref={filterBtn}>
-          <FaFilter onClick={handleFilter} className="text-lg cursor-pointer" />
+          <FaFilter
+            onClick={handleFilter}
+            className="md:text-lg text-sm cursor-pointer"
+          />
         </span>
         {showFilters && (
           <motion.div
@@ -153,14 +154,22 @@ const Searchbar = () => {
             transition={{ duration: 0.5 }}
             onClick={handleFilterSelect}
             ref={filterDivRef}
-            className="h-fit w-fit
-         shadow-sm shadow-gray-400 bg-neutral-950 absolute sm:right-4 right-2 sm:-bottom-58 -bottom-60 grid grid-cols-3 gap-4 rounded-md py-3 sm:px-4 px-2 [&>div]:flex [&>div]:gap-x-2 z-10 [&>div>input]:cursor-pointer sm:[&>div]:text-lg [&>div]:text-[10px]"
+            className="h-fit sm:w-fit shadow-sm shadow-gray-400  bg-neutral-950 absolute sm:right-4 -right-2 sm:-bottom-58 -bottom-34 grid grid-cols-3 sm:gap-4  gap-x-2 gap-y-2 rounded-md sm:py-3 py-2 sm:px-4 px-2 [&>div]:flex sm:[&>div]:gap-x-2 [&>div]:gap-x-1 z-60 
+            [&>div>input]:cursor-pointer sm:[&>div]:text-lg [&>div]:text-[10px] 
+         [&>div]:items-center"
           >
             {genres
               .filter((genre) => !ExcludedCategories.includes(genre.name))
               .map((genre) => (
                 <div className="genresName" key={genre.id}>
-                  <input type="radio" id={genre.id} name="option" />
+                  <input
+                    className="scale-80 md:scale-100"
+                    type="radio"
+                    checked={selectedGenre === genre.id}
+                    onChange={() => setSelectedGenre(genre.id)}
+                    id={genre.id}
+                    name="option"
+                  />
                   {genre.name == "Science Fiction" ? "Sci-Fi" : genre.name}
                 </div>
               ))}

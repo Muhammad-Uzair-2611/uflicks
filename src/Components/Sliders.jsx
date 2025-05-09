@@ -124,8 +124,6 @@ const Sliders = () => {
     JSON.stringify(sessionStorage.setItem("isAllowed", isAllowed));
   }, [isAllowed]);
 
- 
-
   //*Functions
   const handleclick = useCallback((direction, e) => {
     try {
@@ -282,7 +280,7 @@ const Sliders = () => {
         <div className="w-full border h-0  border-neutral-800"></div>
       </motion.div>
       <motion.div
-        className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3 mt-0 items-center relative"
+        className="h-fit sm:h-fit sm:py-0 sm:px-4 px-0 sm:mt-3 mt-0 items-center relative"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -322,7 +320,6 @@ const Sliders = () => {
           className="flex gap-x-7 overflow-x-scroll px-2 py-4 scrollbar-hide transition-all scroll-smooth"
         >
           <AnimatePresence>
-            
             {trendng_Movies?.map((movie) => (
               <motion.div
                 key={movie.id}
@@ -356,7 +353,7 @@ const Sliders = () => {
         <div className="w-full border h-0  border-neutral-800"></div>
       </motion.div>
       <motion.div
-        className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3  mt-0 items-center relative"
+        className="h-fit sm:px-4 px-0 sm:mt-3 mt-0 items-center relative"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -428,7 +425,7 @@ const Sliders = () => {
         <div className="w-full border h-0  border-neutral-800"></div>
       </motion.div>
       <motion.div
-        className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3  mt-0 sm:mb-10 relative"
+        className="h-fit sm:h-fit sm:px-4 px-0 sm:mt-3  mt-0 sm:mb-10 relative"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -495,14 +492,12 @@ const Sliders = () => {
       >
         <span className="text-amber mr-1 md:pl-4 sm:pl-3 pl-2 sm:text-3xl text-xl w-fit  whitespace-nowrap ">
           {title_4[0]}
-        </span>
-        <span className="text-white sm:text-3xl w-full text-xl ">
-          {title_4[1]}
-        </span>
+        </span>{" "}
+        <span className="text-white sm:text-3xl text-xl">{title_4[1]}</span>
         <div className="w-full border h-0  border-neutral-800"></div>
       </motion.div>
       <motion.div
-        className="h-55 sm:h-fit mb-5 sm:px-4 px-0 sm:mt-3  mt-0 sm:mb-10 relative"
+        className="h-fit sm:h-fit sm:px-4 px-0 sm:mt-3  mt-0 sm:mb-10 relative"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

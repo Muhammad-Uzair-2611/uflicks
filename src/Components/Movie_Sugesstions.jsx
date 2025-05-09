@@ -66,7 +66,7 @@ const Movie_Sugesstions = () => {
     if (searchItem == "") {
       async function fetch() {
         const movies = await getFliteredMovies(filter?.id || "28,12,878");
-        console.log(movies);
+
         setCurrentMovies(movies);
       }
       fetch();
@@ -232,17 +232,17 @@ const Movie_Sugesstions = () => {
   }
 
   return (
-    <div className="mt-10 ">
+    <div className="sm:mt-10">
       <motion.div
-        className="sm:text-2xl w-[96vw]  text-xl flex justify-between items-center sm:mb-2 mb-3 sm:px-4 px-2 font-semibold"
+        className="sm:text-2xl w-[96vw] text-lg flex justify-between items-center sm:mb-2 sm:px-4 px-2 font-semibold"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         {currentMovies.length > 0 && (
           <div
-            className="space-x-6 sm:text-xl  px-3  py-3 [&>a]:cursor-pointer [&_span]:text-[#f3b00c] 
-  [&>a]:tracking-widest"
+            className="space-x-6 sm:text-xl text-sm px-3 py-3 [&>a]:cursor-pointer
+            [&_span]:text-[#f3b00c] [&>a]:tracking-widest"
           >
             <NavLink
               to={`/${category}/movies`}
@@ -275,9 +275,7 @@ const Movie_Sugesstions = () => {
         )}
       </motion.div>
       <motion.div
-        className={`sm:px-4 px-2 mb-2  gap-y-8 gap-x-4 sm:block ${
-          currentMovies.length > 0 && "grid grid-cols-3"
-        } `}
+        className={`sm:px-4 px-3 mb-2`}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -295,7 +293,7 @@ const Movie_Sugesstions = () => {
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
                 }}
-                className="relative bg-none sm:w-full w-fit flex sm:mb-6 mb-0 sm:py-2 p-0 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer shadow-md shadow-gray-600"
+                className="relative bg-none w-full flex sm:mb-6 mb-3 sm:py-2 p-2 sm:px-3 sm:gap-x-3 rounded-lg cursor-pointer sm:shadow-md shadow-gray-600 min-h-30"
                 ref={
                   index === visibleCardCount - 1
                     ? lastRenderedCard
@@ -308,30 +306,33 @@ const Movie_Sugesstions = () => {
                 exit={{ opacity: 0, scale: 0.8 }}
               >
                 <div
-                  className={`absolute z-0 bg-black/40 inset-0  duration-700 md:bg-none
-                transition-opacity`}
+                  className={`absolute z-0 bg-black/50 inset-0  duration-700 md:bg-none
+                transition-opacity rounded-lg`}
                 />
                 <div className="flex z-10 gap-x-3 text-gray-200">
-                  <div className="flex z-10 gap-x-3 ">
-                    <div className="md:min-w-30 md:w-30 md:h-45 sm:min-w-28 sm:w-28 sm:h-40 w-25 h-37 overflow-hidden rounded-lg bg-no-repeat bg-cover shadow-md shadow-black">
+                  <div className="flex z-10 gap-x-3 items-center justify-center ">
+                    <div className="md:min-w-30 md:w-30 md:h-45 sm:min-w-28 sm:w-28 sm:h-40 w-18 h-26 overflow-hidden rounded-lg bg-no-repeat bg-cover shadow-md shadow-black">
                       <img
                         loading="lazy"
+                        style={{ objectFit: "contain" }}
                         src={`${ImageURL?.url}${ImageURL?.sizes[1]}${movie?.poster}`}
                         alt=""
                       />
                     </div>
                   </div>
                   <div className="">
-                    <div className="mb-4">
-                      <div className="font-semibold md:text-xl sm:text-lg hidden sm:block mb-2">
+                    <div className="sm:mb-4 ">
+                      <div className="font-bold md:text-xl sm:text-lg text-sm sm:mb-2">
                         {movie.title}
                       </div>
-                      <span className="md:text-[16px] sm:text-sm hidden sm:block text-neutral-300">
+                      <span className="md:text-[16px] sm:text-sm text-xs  text-neutral-300">
                         {movie.release_date}
                       </span>
                     </div>
-                    <p className="md:text-sm sm:text-xs sm:block hidden">
-                      {movie?.overview || "Overview Not Avialable."}
+                    <p className="md:text-sm sm:text-xs text-[10px] ">
+                      {movie.overview.length > 170
+                        ? movie.overview.slice(0, 170) + "..."
+                        : movie.overview || "Overview Not Avialable."}
                     </p>
                   </div>
                 </div>

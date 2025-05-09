@@ -4,6 +4,7 @@ import { Outlet, useMatches, useNavigate } from "react-router-dom";
 import ScrollToTop from "./Components/ScrollToTop";
 import { MoviesInfoProvider } from "./Context/MovieInfoContext";
 import { useSearch } from "./Context/Searchcontext";
+import Searchbar from "./Components/Searchbar";
 
 const Layout = () => {
   const matches = useMatches();
@@ -19,6 +20,9 @@ const Layout = () => {
     <div className="container mx-auto">
       <ScrollToTop />
       {!hideSearNav && <NavBar />}
+      <div className="block md:hidden py-5">
+        <Searchbar />
+      </div>
       <MoviesInfoProvider>
         <Outlet />
       </MoviesInfoProvider>

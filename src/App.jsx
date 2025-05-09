@@ -5,7 +5,7 @@ import Sliders from "./Components/Sliders";
 import { useSearch } from "./Context/Searchcontext";
 
 function App() {
-  const { isFocus } = useSearch();
+ 
 
  
   return (

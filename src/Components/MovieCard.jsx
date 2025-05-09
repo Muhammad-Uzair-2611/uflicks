@@ -9,7 +9,7 @@ const MovieCard = (props) => {
   //*Functions
   const handleClick = (e) => {
     setIsAllowed(true);
-    console.log(e.currentTarget.id)
+    console.log(e.currentTarget.id);
     setMovieId(e.currentTarget.id);
     navigate("/movieinfo");
   };
@@ -19,18 +19,19 @@ const MovieCard = (props) => {
       <div
         onClick={handleClick}
         id={props.id}
-        className="md:w-35 md:h-52 overflow-hidden sm:w-30 sm:h-45 w-25 h-36 rounded-lg cursor-pointer bg-no-repeat bg-cover sm:mb-3 mb-2  shadow-sm shadow-gray-500"
+        className="md:w-35 md:h-52 overflow-hidden sm:w-30 sm:h-45 w-22 h-29 rounded-lg cursor-pointer sm:mb-3 mb-2  shadow-sm shadow-gray-500"
       >
         <img
+          className="object-auto w-full h-full"
           loading="lazy"
           src={`${props.url}${props.size}${props.poster}`}
           alt=""
         />
       </div>
 
-      <span className="font-semibold sm:text-xl text-sm mt-5 ">
-        {props.title.length > 20
-          ? props.title.slice(0, 20) + "..."
+      <span className="font-semibold sm:text-xl text-sm ">
+        {props.title.length > 15
+          ? props.title.slice(0, 15) + "..."
           : props.title}
       </span>
     </>

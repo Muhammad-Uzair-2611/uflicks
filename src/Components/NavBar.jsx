@@ -19,7 +19,7 @@ const NavBar = () => {
         </a>
       </div>
       <div className=" flex text-2xl mb-2 gap-x-5 ">
-        <div>
+        <div className="hidden md:block">
           <Searchbar />
         </div>
         <span className="md:hidden">
