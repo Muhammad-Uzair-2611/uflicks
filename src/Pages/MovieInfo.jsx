@@ -5,7 +5,7 @@ import { useMovieInfo } from "../Context/MovieInfoContext";
 import { useNavigate } from "react-router-dom";
 
 const MovieInfo = () => {
-  const { isAllowed, movieId } = useMovieInfo();
+  const { isAllowed, movieId: id } = useMovieInfo();
   const [movieInfo, setMovieInfo] = useState({});
   const [ImageURL, setImageURL] = useState();
 
@@ -14,7 +14,7 @@ const MovieInfo = () => {
   useEffect(() => {
     async function getMovieById() {
       !isAllowed && navigate(-1);
-      const response = await getMoviebyID(movieId);
+      const response = await getMoviebyID(id);
       const imageURl = await getImageURL();
       setImageURL(imageURl);
       setMovieInfo(response);

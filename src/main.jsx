@@ -5,14 +5,21 @@ import "./index.css";
 import App from "./App.jsx";
 import Layout from "./Layout.jsx";
 import { SearchProvider } from "./Context/Searchcontext.jsx";
-import PageNotFound from "./Components/PageNotFound.jsx";
+import PageNotFound from "./Pages/PageNotFound.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import MovieInfo from "./Components/MovieInfo.jsx";
-import Movie_Sugesstions from "./Components/Movie_Sugesstions.jsx";
+import MovieInfo from "./Pages/MovieInfo.jsx";
+import Movie_Sugesstions from "./Pages/Movie_Sugesstions.jsx";
 import MoviesPage from "./Pages/MoviesPage.jsx";
 import CategoryPage from "./Pages/CategoryPage.jsx";
 
-const categories = ["animations", "action", "adventure", "horror", "drama", "comedy"];
+const categories = [
+  "animations",
+  "action",
+  "adventure",
+  "horror",
+  "drama",
+  "comedy",
+];
 const types = ["movies", "shows"];
 
 const categoryRoutes = categories.flatMap((category) =>
@@ -51,7 +58,11 @@ const routes = createBrowserRouter([
         handle: { hide_navbar: true },
       },
       {
-        path: "search",
+        path: "search/movies",
+        element: <Movie_Sugesstions />,
+      },
+      {
+        path: "search/shows",
         element: <Movie_Sugesstions />,
       },
       {

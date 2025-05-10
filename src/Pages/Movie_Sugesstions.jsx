@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { getImageURL, getFliteredMovies } from "../services/movie_api";
+import {
+  getImageURL,
+  getFliteredMovies,
+  getFliteredShows,
+} from "../services/movie_api";
 import { useSearch } from "../Context/Searchcontext";
 import { useMovieInfo } from "../Context/MovieInfoContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,8 +17,9 @@ const Movie_Sugesstions = () => {
   const [error, setError] = useState(null);
   const { searchItem, searchResult, filter } = useSearch();
   const { setIsAllowed, isAllowed, setMovieId } = useMovieInfo();
-  const [currentMovies, setCurrentMovies] = useState([]);
+  const [currentMovies, setCurrentData] = useState([]);
   const [category, setCategory] = useState("");
+  const [path, setPath] = useState([]);
   const lastRenderedCard = useRef(null);
   const firstRenderedCard = useRef(null);
   const navigate = useNavigate();
@@ -27,12 +32,17 @@ const Movie_Sugesstions = () => {
         setIsAllowed(false);
         setLoading(true);
         setError(null);
-        let [path] = location.pathname.split("/").slice(1);
-        setCategory(path);
+        setPath(location.pathname.split("/").slice(1));
+        setCategory(path[0]);
         const imageURl = await getImageURL();
         setImageURL(imageURl);
-        const movies = await getFliteredMovies("28,12,878");
-        setCurrentMovies(movies);
+        if (location.pathname === "/search/shows") {
+          const shows = await getFliteredShows("10759,9648,10765");
+          setCurrentData(shows);
+        } else {
+          const movies = await getFliteredMovies("28,12,878");
+          setCurrentData(movies);
+        }
       } catch (err) {
         setError(err.message);
         console.error("Error fetching content:", err);
@@ -41,15 +51,21 @@ const Movie_Sugesstions = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [location.pathname]);
+
   useEffect(() => {
     async function fetchMovies() {
       setLoading(true);
       try {
         if (filter.id) {
-          setCurrentMovies([]);
-          const movies = await getFliteredMovies(filter?.id);
-          setCurrentMovies(movies);
+          setCurrentData([]);
+          if (location.pathname === "/search/movies") {
+            const data = await getFliteredMovies(filter?.id);
+            setCurrentData(data);
+          } else {
+            const data = await getFliteredShows(filter?.id);
+            setCurrentData(data);
+          }
         }
       } catch (err) {
         setError(err.message);
@@ -65,17 +81,23 @@ const Movie_Sugesstions = () => {
   useEffect(() => {
     if (searchItem == "") {
       async function fetch() {
-        const movies = await getFliteredMovies(filter?.id || "28,12,878");
-
-        setCurrentMovies(movies);
+        if (location.pathname === "/search/shows") {
+          const shows = await getFliteredShows(
+            filter?.id || "10759,9648,10765"
+          );
+          setCurrentData(shows);
+        } else {
+          const movies = await getFliteredMovies(filter?.id || "28,12,878");
+          setCurrentData(movies);
+        }
       }
       fetch();
     }
     if (searchResult.length <= 0) {
-      setCurrentMovies([]);
+      setCurrentData([]);
     }
 
-    setCurrentMovies(searchResult);
+    setCurrentData(searchResult);
 
     setVisibleCardCount(10);
   }, [searchResult]);
@@ -114,7 +136,7 @@ const Movie_Sugesstions = () => {
   //*Functions
   const handleClick = (e) => {
     setIsAllowed(true);
-    setMovieId(e.currentTarget.id);
+    setMovieId({ id: e.currentTarget.id, type: path[1] });
     navigate("/movieinfo");
   };
 
@@ -232,17 +254,17 @@ const Movie_Sugesstions = () => {
   }
 
   return (
-    <div className="sm:mt-10">
+    <div className="sm:mt-10 px-3">
       <motion.div
-        className="sm:text-2xl w-[96vw] text-lg flex justify-between items-center sm:mb-2 sm:px-4 px-2 font-semibold"
+        className="flex max-w-246 w-full items-center justify-between md:text-2xl sm:text-xl text-lg font-semibold px-3"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         {currentMovies.length > 0 && (
           <div
-            className="space-x-6 sm:text-xl text-sm px-3 py-3 [&>a]:cursor-pointer
-            [&_span]:text-[#f3b00c] [&>a]:tracking-widest"
+            className="space-x-6  sm:text-xl text-sm py-3 [&>a]:cursor-pointer
+            [&_span]:text-[#f3b00c] [&>a]:tracking-widest "
           >
             <NavLink
               to={`/${category}/movies`}
@@ -275,7 +297,7 @@ const Movie_Sugesstions = () => {
         )}
       </motion.div>
       <motion.div
-        className={`sm:px-4 px-3 mb-2`}
+        className={`mb-2 px-3 py-2`}
         variants={containerVariants}
         initial="hidden"
         animate="visible"

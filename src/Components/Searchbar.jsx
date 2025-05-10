@@ -2,7 +2,11 @@ import { FaSearch, FaFilter } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
 import { React, useState, useRef, useEffect, useCallback } from "react";
 import { useSearch } from "../Context/Searchcontext";
-import { getSearchResult, getGenres } from "../services/movie_api";
+import {
+  getSearchResult,
+  getMoviesGenres,
+  getShowsGenres,
+} from "../services/movie_api";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -62,7 +66,8 @@ const Searchbar = () => {
   };
   const handleClick = () => {
     if (isFocus != true) {
-      navigate("/search");
+      navigate("/search/movies");
+
       setSearchItem("");
       Search_Ref.current?.focus();
     } else {
@@ -81,8 +86,9 @@ const Searchbar = () => {
       setIsFocus(true);
       setFilter({
         id: e.target.id,
-        name: div.innerText,
+        name: div.dataset.name,
       });
+      setSelectedGenre(e.target.id);
     }
   };
   const handleClickOutside = useCallback((e) => {
@@ -99,11 +105,17 @@ const Searchbar = () => {
   //*Effects
   useEffect(() => {
     async function fetch() {
-      const genres = await getGenres();
-      setGenres(genres);
+      if (location.pathname === "/search/movies") {
+        const genres = await getMoviesGenres();
+        setGenres(genres);
+      } else {
+        const genres = await getShowsGenres();
+        setGenres(genres);
+      }
+      return () => setGenres([]);
     }
     fetch();
-  }, []);
+  }, [location.pathname]);
   useEffect(() => {
     if (showFilters) {
       document.addEventListener("mousedown", handleClickOutside);
@@ -161,7 +173,11 @@ const Searchbar = () => {
             {genres
               .filter((genre) => !ExcludedCategories.includes(genre.name))
               .map((genre) => (
-                <div className="genresName" key={genre.id}>
+                <div
+                  className="genresName"
+                  key={genre.id}
+                  data-name={genre.name}
+                >
                   <input
                     className="scale-80 md:scale-100"
                     type="radio"
@@ -170,7 +186,9 @@ const Searchbar = () => {
                     id={genre.id}
                     name="option"
                   />
-                  {genre.name == "Science Fiction" ? "Sci-Fi" : genre.name}
+                  <span className="w-fit text-nowrap">
+                    {genre.name == "Science Fiction" ? "Sci-Fi" : genre.name}
+                  </span>
                 </div>
               ))}
           </motion.div>
