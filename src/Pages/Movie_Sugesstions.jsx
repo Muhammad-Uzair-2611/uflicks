@@ -22,7 +22,6 @@ const Movie_Sugesstions = () => {
   const [currentMovies, setCurrentData] = useState([]);
   const [heading, setHeading] = useState("");
   const [category, setCategory] = useState("");
-  const [path, setPath] = useState([]);
   const lastRenderedCard = useRef(null);
   const firstRenderedCard = useRef(null);
   const navigate = useNavigate();
@@ -39,18 +38,17 @@ const Movie_Sugesstions = () => {
         setCategory(Path);
         const [movGens, showGens, imageURl] = await Promise.all([
           getMoviesGenres(),
-          getMoviesGenres(),
+          getShowsGenres(),
           getImageURL(),
         ]);
         setImageURL(imageURl);
         if (location.pathname === "/search/shows") {
           const isMatch = showGens.map((gen) => gen.id).includes(filter.id);
-          const GenreID = isMatch ? filter.id : "28,12,878";
+          const GenreID = isMatch ? filter.id : "10759,9648,10765";
           setHeading(isMatch ? filter.name : "Discover");
 
           const shows = await getFliteredShows(GenreID);
           setCurrentData(shows);
-          // setHeading(filter.id ? ); //TODO: Make Discover Randamize
         } else {
           const isMatch = movGens.map((gen) => gen.id).includes(filter.id);
           const GenreID = isMatch ? filter.id : "28,12,878";
@@ -67,7 +65,7 @@ const Movie_Sugesstions = () => {
       }
     }
     fetchData();
-  }, [location.pathname]);
+  }, [location.pathname, filter.id, setIsAllowed]);
 
   useEffect(() => {
     async function fetchMovies() {
@@ -75,7 +73,6 @@ const Movie_Sugesstions = () => {
       try {
         setHeading(filter?.name);
         if (filter.id) {
-          // setCurrentData([]);
           if (location.pathname === "/search/movies") {
             const data = await getFliteredMovies(filter?.id);
             setCurrentData(data);
@@ -96,7 +93,7 @@ const Movie_Sugesstions = () => {
   }, [filter]);
 
   useEffect(() => {
-    if (searchItem == "") {
+    if (searchItem === "") {
       async function fetch() {
         if (location.pathname === "/search/shows") {
           const shows = await getFliteredShows(
@@ -109,24 +106,25 @@ const Movie_Sugesstions = () => {
         }
       }
       fetch();
-    }
-    if (searchResult.length <= 0) {
+    } else if (searchResult.length > 0) {
+      setCurrentData(searchResult);
+    } else {
       setCurrentData([]);
     }
-
-    setCurrentData(searchResult);
 
     setVisibleCardCount(10);
   }, [searchResult]);
 
   useEffect(() => {
     if (visibleCardCount >= currentMovies.length) return;
+
     const lastCardObserver = new IntersectionObserver((entries) => {
       const entry1 = entries[0];
       if (entry1.isIntersecting) {
         setVisibleCardCount((prev) => prev + 10);
       }
     });
+
     const firstCardObserver = new IntersectionObserver((entries) => {
       const entry1 = entries[0];
       if (entry1.isIntersecting) {
@@ -134,26 +132,34 @@ const Movie_Sugesstions = () => {
       }
     });
 
-    if (lastRenderedCard.current && firstRenderedCard.current) {
-      firstCardObserver.observe(firstRenderedCard.current);
-      lastCardObserver.observe(lastRenderedCard.current);
+    const lastCard = lastRenderedCard.current;
+    const firstCard = firstRenderedCard.current;
+
+    if (lastCard) {
+      lastCardObserver.observe(lastCard);
+    }
+    if (firstCard) {
+      firstCardObserver.observe(firstCard);
     }
 
     return () => {
-      if (lastRenderedCard.current && firstRenderedCard.current) {
-        firstCardObserver.unobserve(firstRenderedCard.current);
-        lastCardObserver.unobserve(lastRenderedCard.current);
+      if (lastCard) {
+        lastCardObserver.unobserve(lastCard);
+      }
+      if (firstCard) {
+        firstCardObserver.unobserve(firstCard);
       }
     };
   }, [visibleCardCount, currentMovies.length]);
+
   useEffect(() => {
-    JSON.stringify(sessionStorage.setItem("isAllowed", isAllowed));
+    sessionStorage.setItem("isAllowed", JSON.stringify(isAllowed));
   }, [isAllowed]);
 
   //*Functions
   const handleClick = (e) => {
     setIsAllowed(true);
-    setMovieId({ id: e.currentTarget.id, type: path[1] });
+    setMovieId({ id: e.currentTarget.id, type: category });
     navigate("/movieinfo");
   };
 
@@ -219,27 +225,6 @@ const Movie_Sugesstions = () => {
       },
     },
   };
-
-  // if (loading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <motion.div
-  //         className="flex flex-col items-center gap-4"
-  //         variants={loadingVariants}
-  //         animate="animate"
-  //       >
-  //         <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-  //         <motion.p
-  //           className="text-xl text-gray-600"
-  //           animate={{ opacity: [0.5, 1, 0.5] }}
-  //           transition={{ duration: 1.5, repeat: Infinity }}
-  //         >
-  //           Loading...
-  //         </motion.p>
-  //       </motion.div>
-  //     </div>
-  //   );
-  // }
 
   if (error) {
     return (
