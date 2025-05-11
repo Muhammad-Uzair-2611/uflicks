@@ -64,7 +64,7 @@ const Searchbar = () => {
       debouncedSearch(value);
     }
   };
-  const handleClick = () => {
+  const handleClick = async () => {
     if (isFocus != true) {
       navigate("/search/movies");
 
@@ -85,7 +85,7 @@ const Searchbar = () => {
       setSearchItem("");
       setIsFocus(true);
       setFilter({
-        id: e.target.id,
+        id: Number(e.target.id),
         name: div.dataset.name,
       });
       setSelectedGenre(e.target.id);
@@ -105,16 +105,16 @@ const Searchbar = () => {
   //*Effects
   useEffect(() => {
     async function fetch() {
-      if (location.pathname === "/search/movies") {
-        const genres = await getMoviesGenres();
-        setGenres(genres);
-      } else {
+      if (location.pathname === "/search/shows") {
         const genres = await getShowsGenres();
         setGenres(genres);
+      } else {
+        const genres = await getMoviesGenres();
+        setGenres(genres);
       }
-      return () => setGenres([]);
     }
     fetch();
+    return () => setGenres([]);
   }, [location.pathname]);
   useEffect(() => {
     if (showFilters) {
