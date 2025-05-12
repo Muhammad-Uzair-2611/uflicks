@@ -89,7 +89,6 @@ const Sliders = () => {
           setTitle_4(["Active", "Shows"]);
         }
 
-        setIsAllowed(false);
         setLoading(true);
         setError(null);
 

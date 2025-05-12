@@ -60,6 +60,7 @@ const routes = createBrowserRouter([
       {
         path: "media/:id",
         element: <MediaDetails />,
+        // handle: { hide_navbar: true },
       },
       {
         path: "*",

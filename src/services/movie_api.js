@@ -408,7 +408,7 @@ export const getMovieDetails = async (id) => {
   try {
     const fetch = await axios.get(`${BASE_URL}movie/${id}?api_key=${API_KEY}`);
     const response = fetch.data;
-    console.log(response);
+
     const movieinfo = {
       title: response.original_title,
       tagline: response.tagline,
@@ -429,7 +429,7 @@ export const getMovieDetails = async (id) => {
       ),
       status: response.status,
       rating: response.vote_average,
-      vote : response.vote_count
+      vote: response.vote_count,
     };
     return movieinfo;
   } catch (error) {

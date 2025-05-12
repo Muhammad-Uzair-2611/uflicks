@@ -66,7 +66,7 @@ const Searchbar = () => {
   };
   const handleClick = async () => {
     if (isFocus != true) {
-      navigate("/search/movies");
+      // navigate("/search/movies");
 
       setSearchItem("");
       Search_Ref.current?.focus();

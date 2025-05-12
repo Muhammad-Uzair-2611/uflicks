@@ -16,9 +16,11 @@ const MediaDetails = () => {
 
   useEffect(() => {
     if (!isAllowed) {
-      const allowedFromStorage = JSON.parse(sessionStorage.getItem("isAllowed"));
+      const allowedFromStorage = JSON.parse(
+        sessionStorage.getItem("isAllowed")
+      );
       if (!allowedFromStorage) {
-        navigate("/", { replace: true }); // Redirect to home or a safe route
+        navigate("/");
       } else {
         setIsAllowed(true);
       }
@@ -33,7 +35,7 @@ const MediaDetails = () => {
           getImageURL(),
           getMovieDetails(id.id),
         ]);
-        console.log(details);
+
         setImageURL(imageURl);
         setMediaInfo(details);
       } catch (err) {
@@ -87,8 +89,14 @@ const MediaDetails = () => {
   return (
     <div className="relative">
       <div className="backImage w-full h-[90%] absolute -z-10 ">
+        <div
+          className={`absolute z-15 bg-black/40 inset-0  duration-700 
+                transition-opacity rounded-lg`}
+        >
+          {" "}
+        </div>
         <img
-          className="w-full h-full blur-xs"
+          className="w-full h-full "
           src={`${ImageURL?.url}${ImageURL?.banner_sizes[3]}${mediaInfo.banner}`}
           alt=""
         />
@@ -134,7 +142,7 @@ const MediaDetails = () => {
           <div className="space-y-4">
             <div
               className="border-y border-white rounded-xs w-130 text-sm  gap-x-2 flex items-center shrink-0 flex-wrap 
-          [&_h2]:text-neutral-300 [&>div]:flex [&>div]:gap-x-2"
+          [&_h2]:text-neutral-300 [&>div]:flex [&>div]:gap-x-2 [&>div]:text-nowrap [&>div]:flex-wrap"
             >
               <div className="   items-center [&>span]:text-amber-300">
                 <h2 className="">Genres - </h2>
@@ -148,15 +156,15 @@ const MediaDetails = () => {
                 <span>{mediaInfo.release}</span>
               </div>
               {"|"}
-              <div>
+              <div className="">
                 <h2 className="">Production Companies - </h2>
                 {mediaInfo.productionCompanies.map((comp, index) => (
                   <span key={index}>{`${comp} ${
                     index != mediaInfo.productionCompanies.length - 1 ? "," : ""
                   }`}</span>
                 ))}
+                {"|"}
               </div>
-              {"|"}
               <div>
                 <h2 className="">Status - </h2>
                 <span>{mediaInfo.status}</span>
@@ -173,7 +181,7 @@ const MediaDetails = () => {
               {"|"}
               <div>
                 <h2 className="">Type - </h2>
-                <span>{id.type === "movie" ? "Movie" : "Show"}</span>
+                <span>{id.type === "movies" ? "Movie" : "Show"}</span>
               </div>
             </div>
 

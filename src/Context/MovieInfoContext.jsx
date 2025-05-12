@@ -6,7 +6,7 @@ export function MoviesInfoProvider({ children }) {
   let movieID = sessionStorage.getItem("movieID");
   const [movieId, setMovieId] = useState(movieID ? JSON.parse(movieID) : null);
   let isAllow = JSON.parse(sessionStorage.getItem("isAllowed"));
-  const [isAllowed, setIsAllowed] = useState(isAllow ? isAllow : null);
+  const [isAllowed, setIsAllowed] = useState(isAllow ? isAllow : false);
 
   //*Effects
   useEffect(() => {

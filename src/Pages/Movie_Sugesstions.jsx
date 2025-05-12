@@ -17,7 +17,8 @@ const Movie_Sugesstions = () => {
   const [loading, setLoading] = useState(true);
   const [visibleCardCount, setVisibleCardCount] = useState(10);
   const [error, setError] = useState(null);
-  const { searchItem, searchResult, filter } = useSearch();
+  const { searchItem, searchResult, filter, setSearchItem, setIsFocus } =
+    useSearch();
   const { setIsAllowed, isAllowed, setMovieId } = useMovieInfo();
   const [currentMovies, setCurrentData] = useState([]);
   const [heading, setHeading] = useState("");
@@ -28,7 +29,27 @@ const Movie_Sugesstions = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  //*Effects
+  //* Constants
+  const DEFAULT_MOVIE_GENRES = "28,12,878";
+  const DEFAULT_SHOW_GENRES = "10759,9648,10765";
+
+  //* Helpers
+  function getGenreInfo(genres, defaultGenres, filter) {
+    const isMatch = genres.map((gen) => gen.id).includes(filter.id);
+    return {
+      genreId: isMatch ? filter.id : defaultGenres,
+      heading: isMatch ? filter.name : "Discover",
+    };
+  }
+
+  async function fetchFilteredContent(path, genreId) {
+    if (path === "/search/shows") {
+      return await getFliteredShows(genreId || DEFAULT_SHOW_GENRES);
+    }
+    return await getFliteredMovies(genreId || DEFAULT_MOVIE_GENRES);
+  }
+
+  //* Effects
   useEffect(() => {
     async function fetchData() {
       try {
@@ -36,27 +57,34 @@ const Movie_Sugesstions = () => {
         setLoading(true);
         setError(null);
         let [Path, type] = location.pathname.split("/").slice(1);
+        console.log(type)
         setCategory(Path);
         setType(type);
+
         const [movGens, showGens, imageURl] = await Promise.all([
           getMoviesGenres(),
           getShowsGenres(),
           getImageURL(),
         ]);
         setImageURL(imageURl);
-        if (location.pathname === "/search/shows") {
-          const isMatch = showGens.map((gen) => gen.id).includes(filter.id);
-          const GenreID = isMatch ? filter.id : "10759,9648,10765";
-          setHeading(isMatch ? filter.name : "Discover");
 
-          const shows = await getFliteredShows(GenreID);
+        if (location.pathname === "/search/shows") {
+          const { genreId, heading } = getGenreInfo(
+            showGens,
+            DEFAULT_SHOW_GENRES,
+            filter
+          );
+          setHeading(heading);
+          const shows = await getFliteredShows(genreId);
           setCurrentData(shows);
         } else {
-          const isMatch = movGens.map((gen) => gen.id).includes(filter.id);
-          const GenreID = isMatch ? filter.id : "28,12,878";
-          setHeading(isMatch ? filter.name : "Discover");
-
-          const movies = await getFliteredMovies(GenreID);
+          const { genreId, heading } = getGenreInfo(
+            movGens,
+            DEFAULT_MOVIE_GENRES,
+            filter
+          );
+          setHeading(heading);
+          const movies = await getFliteredMovies(genreId);
           setCurrentData(movies);
         }
       } catch (err) {
@@ -75,13 +103,8 @@ const Movie_Sugesstions = () => {
       try {
         setHeading(filter?.name);
         if (filter.id) {
-          if (location.pathname === "/search/movies") {
-            const data = await getFliteredMovies(filter?.id);
-            setCurrentData(data);
-          } else {
-            const data = await getFliteredShows(filter?.id);
-            setCurrentData(data);
-          }
+          const data = await fetchFilteredContent(location.pathname, filter.id);
+          setCurrentData(data);
         }
       } catch (err) {
         setError(err.message);
@@ -97,15 +120,8 @@ const Movie_Sugesstions = () => {
   useEffect(() => {
     if (searchItem === "") {
       async function fetch() {
-        if (location.pathname === "/search/shows") {
-          const shows = await getFliteredShows(
-            filter?.id || "10759,9648,10765"
-          );
-          setCurrentData(shows);
-        } else {
-          const movies = await getFliteredMovies(filter?.id || "28,12,878");
-          setCurrentData(movies);
-        }
+        const data = await fetchFilteredContent(location.pathname, filter?.id);
+        setCurrentData(data);
       }
       fetch();
     } else if (searchResult.length > 0) {
@@ -155,12 +171,15 @@ const Movie_Sugesstions = () => {
   }, [visibleCardCount, currentMovies.length]);
 
   useEffect(() => {
+    console.log(isAllowed);
     sessionStorage.setItem("isAllowed", JSON.stringify(isAllowed));
   }, [isAllowed]);
 
   //*Functions
   const handleClick = (e) => {
     setIsAllowed(true);
+    setSearchItem("");
+    setIsFocus(false);
     setMovieId({ id: e.currentTarget.id, type: type });
     console.log(`/media/${e.currentTarget.id}`);
     navigate(`/media/${e.currentTarget.id}`);
