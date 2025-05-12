@@ -7,6 +7,7 @@ import {
 } from "../services/movie_api";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useMovieInfo } from "../Context/MovieInfoContext";
+
 const SimpleCarousel = () => {
   //*States & Refrences
   const [topRated, setTopRated] = useState([]);
@@ -18,6 +19,7 @@ const SimpleCarousel = () => {
   const { setMovieId, setIsAllowed } = useMovieInfo();
   const navigate = useNavigate();
   const location = useLocation();
+
   //*Functions
   const startAutoPlay = () => {
     intervalRef.current = setInterval(() => {
@@ -30,11 +32,16 @@ const SimpleCarousel = () => {
     intervalRef.current = null;
   };
 
-  const handleClick = (e) => {
-    let movieID = e.currentTarget.id;
-    setMovieId(movieID);
+  const handleClick = () => {
     setIsAllowed(true);
-    navigate("/movieinfo");
+    const mediaType =
+      location.pathname === "/"
+        ? "movie"
+        : location.pathname === "/movies"
+        ? "movie"
+        : "show";
+    setMovieId({ id: topRated[currentIndex].id, type: mediaType });
+    navigate(`/media/${topRated[currentIndex].id}`);
   };
 
   //*Effects
@@ -54,7 +61,6 @@ const SimpleCarousel = () => {
       const [imageURL, topRated] = await Promise.all([getImageURL(), promise]);
       setImageURL(imageURL);
       setTopRated(topRated);
-      console.lg;
     }
 
     fetchData();
@@ -73,7 +79,7 @@ const SimpleCarousel = () => {
 
   return (
     <div
-      className=" w-full xl:h-[93%] lg:h-[75%] h-fit  overflow-hidden relative  cursor-pointer"
+      className="w-full xl:h-[93%] lg:h-[75%] h-fit overflow-hidden relative cursor-pointer"
       onMouseEnter={() => {
         stopAutoPlay();
         setIsHover(true);
@@ -94,7 +100,7 @@ const SimpleCarousel = () => {
           transform: `translateX(-${currentIndex * (100 / topRated.length)}%)`,
           transition: "transform 0.5s ease-in-out",
         }}
-        className="sm:h-fit h-52 "
+        className="sm:h-fit h-52"
       >
         {topRated?.map((movie, idx) => (
           <div
@@ -112,13 +118,13 @@ const SimpleCarousel = () => {
             <img
               src={`${imageURL?.url}${imageURL?.banner_sizes?.[1]}${movie.banner}`}
               alt={`movie-${idx}`}
-              className={`w-full h-full object-cover transition-all duration-500  ${
+              className={`w-full h-full object-cover transition-all duration-500 ${
                 isHover && "md:blur-sm"
               }`}
             />
             {isHover && (
               <div
-                className={`absolute bg-black/30 inset-0  duration-700 md:bg-none
+                className={`absolute bg-black/30 inset-0 duration-700 md:bg-none
                  z-0 transition-opacity`}
               />
             )}
@@ -131,7 +137,7 @@ const SimpleCarousel = () => {
         <div
           id={topRated[currentIndex].id}
           className={`md:absolute z-10 md:flex lg:gap-x-4 md:gap-x-3 xl:top-1/3 xl:left-30 
-            md:top-1/4 md:left-10 text-white transition-all duration-500 opacity-100 sm:translate-y-4 w-full pb-3  ${
+            md:top-1/4 md:left-10 text-white transition-all duration-500 opacity-100 sm:translate-y-4 w-full pb-3 ${
               isHover
                 ? "md:opacity-100 md:translate-y-0"
                 : "md:opacity-0 md:translate-y-4"

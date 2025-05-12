@@ -1,6 +1,5 @@
 import React from "react";
 import Hero from "../Components/Hero";
-import { FaFilter } from "react-icons/fa";
 import Sliders from "../Components/Sliders";
 const MoviesPage = () => {
   return (

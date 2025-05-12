@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import MovieCard from "./MovieCard.jsx";
+import MediaCard from "./MediaCard.jsx";
 import { FaChevronLeft } from "react-icons/fa";
 import { useSearch } from "../Context/Searchcontext.jsx";
 import { useMovieInfo } from "../Context/MovieInfoContext";
@@ -23,7 +23,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const MemoizedMovieCard = React.memo(MovieCard);
+const MemoizedMediaCard = React.memo(MediaCard);
 
 const Sliders = () => {
   //*States & Ref
@@ -34,7 +34,6 @@ const Sliders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageURL, setImageURL] = useState();
-  const { isFocus } = useSearch();
   const { isAllowed, setIsAllowed } = useMovieInfo();
   const trending_Movie_crousel = useRef(null);
   const now_Playing_crousel = useRef(null);
@@ -327,7 +326,7 @@ const Sliders = () => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
               >
-                <MemoizedMovieCard
+                <MemoizedMediaCard
                   url={imageURL?.url}
                   size={imageURL?.sizes[1]}
                   poster={movie.poster}
@@ -399,7 +398,7 @@ const Sliders = () => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
               >
-                <MemoizedMovieCard
+                <MemoizedMediaCard
                   url={imageURL?.url}
                   size={imageURL?.sizes[1]}
                   poster={movie.poster}
@@ -471,7 +470,7 @@ const Sliders = () => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
               >
-                <MemoizedMovieCard
+                <MemoizedMediaCard
                   url={imageURL?.url}
                   size={imageURL?.sizes[1]}
                   poster={movie.poster}
@@ -543,7 +542,7 @@ const Sliders = () => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
               >
-                <MemoizedMovieCard
+                <MemoizedMediaCard
                   url={imageURL?.url}
                   size={imageURL?.sizes[1]}
                   poster={movie.poster}

@@ -7,10 +7,10 @@ import Layout from "./Layout.jsx";
 import { SearchProvider } from "./Context/Searchcontext.jsx";
 import PageNotFound from "./Pages/PageNotFound.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import MovieInfo from "./Pages/MovieInfo.jsx";
 import Movie_Sugesstions from "./Pages/Movie_Sugesstions.jsx";
 import MoviesPage from "./Pages/MoviesPage.jsx";
 import CategoryPage from "./Pages/CategoryPage.jsx";
+import MediaDetails from "./Pages/MediaDetails.jsx";
 
 const categories = [
   "animations",
@@ -26,7 +26,6 @@ const categoryRoutes = categories.flatMap((category) =>
   types.map((type) => ({
     path: `${category}/${type}`,
     element: <CategoryPage />,
-    handle: { hide_navbar: false },
   }))
 );
 
@@ -39,24 +38,17 @@ const routes = createBrowserRouter([
       {
         path: "",
         element: <App />,
-        handle: { hide_navbar: false },
       },
       {
         path: "movies",
         element: <MoviesPage />,
-        handle: { hide_navbar: false },
       },
       {
         path: "tv_series",
         element: <MoviesPage />,
-        handle: { hide_navbar: false },
       },
       ...categoryRoutes,
-      {
-        path: "movieInfo",
-        element: <MovieInfo />,
-        handle: { hide_navbar: true },
-      },
+
       {
         path: "search/movies",
         element: <Movie_Sugesstions />,
@@ -64,6 +56,10 @@ const routes = createBrowserRouter([
       {
         path: "search/shows",
         element: <Movie_Sugesstions />,
+      },
+      {
+        path: "media/:id",
+        element: <MediaDetails />,
       },
       {
         path: "*",

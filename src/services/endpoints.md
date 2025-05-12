@@ -1,25 +1,27 @@
-# ✅ TMDb API Endpoints  
+# ✅ TMDb API Endpoints
+
 **API Key:** `355b13e494a808991526389d0adce37c`
 
 ---
 
 ## 🎬 1. Movies
- 
+
 - **Movie Details**  
   `GET https://api.themoviedb.org/3/movie/{movie_id}?api_key=355b13e494a808991526389d0adce37c`
-
 - **Popular Movies**  
   `GET https://api.themoviedb.org/3/movie/popular?api_key=355b13e494a808991526389d0adce37c`
 
 - **Top Rated Movies**  
   `GET https://api.themoviedb.org/3/movie/top_rated?api_key=355b13e494a808991526389d0adce37c`
 
-- **Now Playing**  
+- **Now Playing**
 
   `GET https://api.themoviedb.org/3/movie/now_playing?api_key=355b13e494a808991526389d0adce37c`
 
 - **Upcoming Movies**  
   `GET https://api.themoviedb.org/3/movie/upcoming?api_key=355b13e494a808991526389d0adce37c`
+- **Movie Backdrops (Scene Images)**  
+  `GET https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=355b13e494a808991526389d0adce37c include_image_language=en,null`
 
 ---
 
@@ -105,10 +107,6 @@
   `GET https://api.themoviedb.org/3/watch/providers/tv?api_key=355b13e494a808991526389d0adce37c`
 
 ---
-
-
-
-
 
 ## ⚙️ 8. Configuration
 

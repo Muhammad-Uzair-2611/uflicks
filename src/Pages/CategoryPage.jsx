@@ -134,8 +134,8 @@ const CategoryPage = () => {
   //*Functions
   const handleClick = (e) => {
     setIsAllowed(true);
-    setMovieId(e.currentTarget.id);
-    navigate("/movieinfo");
+    setMovieId({ id: e.currentTarget.id, type: category });
+    navigate("/media");
   };
 
   //*Variants

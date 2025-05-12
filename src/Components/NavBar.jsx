@@ -9,14 +9,21 @@ import { GiCrossedSwords, GiMonoWheelRobot } from "react-icons/gi";
 import { LuTv } from "react-icons/lu";
 import { FaMasksTheater } from "react-icons/fa6";
 import Searchbar from "./Searchbar";
+import { getMovieDetails} from "../services/movie_api";
 
 const NavBar = () => {
   return (
-    <nav className="z-50 sm:sticky top-0 left-0 bg-[#181A1B] w-full py-2 h-fit px-5 flex justify-between items-center">
+    <nav className="z-50 sm:sticky top-0 left-0 bg-[#181A1B] w-full py-2 h-16 px-5 flex justify-between items-center">
       <div className="logo">
         <a href="/">
           <img className="sm:w-15 md:w-19 w-10" src="/Logo.png" alt="" />
         </a>
+        {/* <button
+          onClick={() => getMovieDetails(456)}
+          className="px-4 py-2 bg-amber text-black rounded-md hover:bg-amber/80 transition-colors"
+        >
+          Get Movie Details
+        </button> */}
       </div>
       <div className=" flex text-2xl mb-2 gap-x-5 ">
         <div className="hidden md:block">

@@ -22,6 +22,7 @@ const Movie_Sugesstions = () => {
   const [currentMovies, setCurrentData] = useState([]);
   const [heading, setHeading] = useState("");
   const [category, setCategory] = useState("");
+  const [type, setType] = useState("");
   const lastRenderedCard = useRef(null);
   const firstRenderedCard = useRef(null);
   const navigate = useNavigate();
@@ -34,8 +35,9 @@ const Movie_Sugesstions = () => {
         setIsAllowed(false);
         setLoading(true);
         setError(null);
-        let [Path] = location.pathname.split("/").slice(1);
+        let [Path, type] = location.pathname.split("/").slice(1);
         setCategory(Path);
+        setType(type);
         const [movGens, showGens, imageURl] = await Promise.all([
           getMoviesGenres(),
           getShowsGenres(),
@@ -65,7 +67,7 @@ const Movie_Sugesstions = () => {
       }
     }
     fetchData();
-  }, [location.pathname, filter.id, setIsAllowed]);
+  }, [location.pathname, filter.id]);
 
   useEffect(() => {
     async function fetchMovies() {
@@ -159,8 +161,9 @@ const Movie_Sugesstions = () => {
   //*Functions
   const handleClick = (e) => {
     setIsAllowed(true);
-    setMovieId({ id: e.currentTarget.id, type: category });
-    navigate("/movieinfo");
+    setMovieId({ id: e.currentTarget.id, type: type });
+    console.log(`/media/${e.currentTarget.id}`);
+    navigate(`/media/${e.currentTarget.id}`);
   };
 
   //* Animation variants

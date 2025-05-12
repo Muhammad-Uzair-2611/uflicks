@@ -55,7 +55,7 @@ function formatNumber(num) {
 //*Main Functions
 
 //! For Movies
-const getMovies = async (url) => {
+const getMovies = async (url, type) => {
   try {
     const fetch = await axios.get(`${BASE_URL}${url}`);
     const response = fetch.data.results;
@@ -73,13 +73,14 @@ const getMovies = async (url) => {
         banner: movie.backdrop_path,
         poster: movie.poster_path,
         overview: movie.overview,
+        type: type,
       }));
   } catch (error) {
     handleApiError(error);
   }
 };
 //! For Shows
-const getShows = async (url) => {
+const getShows = async (url, type) => {
   try {
     const fetch = await axios.get(`${BASE_URL}${url}`);
     const response = fetch.data.results;
@@ -97,13 +98,14 @@ const getShows = async (url) => {
         release_date: movie.first_air_date,
         poster: movie.poster_path,
         overview: movie.overview,
+        type: type,
       }));
   } catch (error) {
     handleApiError(error);
   }
 };
 //! For Movies with Multiple Pages
-const getMoviesWithPage = async (url) => {
+const getMoviesWithPage = async (url, type) => {
   try {
     const allMovies = [];
     const totalPages = 9;
@@ -123,6 +125,7 @@ const getMoviesWithPage = async (url) => {
           banner: movie.backdrop_path,
           poster: movie.poster_path,
           overview: movie.overview,
+          type: type,
         }));
 
       allMovies.push(...movies);
@@ -133,7 +136,7 @@ const getMoviesWithPage = async (url) => {
   }
 };
 //! For Shows with Multiple Pages
-const getShowsWithPage = async (url) => {
+const getShowsWithPage = async (url, type) => {
   try {
     const allShows = [];
     const totalPages = 9;
@@ -153,6 +156,7 @@ const getShowsWithPage = async (url) => {
           banner: movie.backdrop_path,
           poster: movie.poster_path,
           overview: movie.overview,
+          type: type,
         }));
 
       allShows.push(...shows);
@@ -165,84 +169,84 @@ const getShowsWithPage = async (url) => {
 
 //*Queries
 export const getTrendingMovies = async () => {
-  return getMovies(trendingMovies_URL);
+  return getMovies(trendingMovies_URL, "movie");
 };
 export const getTrendingShows = async () => {
-  return getShows(trendingShows_URL);
+  return getShows(trendingShows_URL, "show");
 };
 
 export const getNowPlayingMovies = async () => {
-  return getMovies(nowPlaying_URL);
+  return getMovies(nowPlaying_URL, "movie");
 };
 export const getPopularMovies = async () => {
-  return getMovies(popularMovies_URL);
+  return getMovies(popularMovies_URL, "movie");
 };
 export const getScienceFictionMovies = async () => {
-  return getMovies(sci_fi_Movies_URL);
+  return getMovies(sci_fi_Movies_URL, "movie");
 };
 
 export const getTopRatedTvShows = async () => {
-  return getShows(topRatedTvShows_URL);
+  return getShows(topRatedTvShows_URL, "show");
 };
 export const getTopRatedMovies = async () => {
-  return getMovies(topRatedMovies_URL);
+  return getMovies(topRatedMovies_URL, "movie");
 };
 
 export const getAnimatedMovies = async () => {
-  return getMoviesWithPage(movies_Category_URL + 16);
+  return getMoviesWithPage(movies_Category_URL + 16, "movie");
 };
 
 export const getAnimatedShows = async () => {
-  return getShowsWithPage(shows_Category_URL + 16);
+  return getShowsWithPage(shows_Category_URL + 16, "show");
 };
 export const getActionMovies = async () => {
-  return getMoviesWithPage(movies_Category_URL + 28);
+  return getMoviesWithPage(movies_Category_URL + 28, "movie");
 };
 
 export const getActionShows = async () => {
-  return getShowsWithPage(shows_Category_URL + 10759);
+  return getShowsWithPage(shows_Category_URL + 10759, "show");
 };
 export const getHorrorMovies = async () => {
-  return getMoviesWithPage(movies_Category_URL + 27);
+  return getMoviesWithPage(movies_Category_URL + 27, "movie");
 };
 
 export const getHorrorShows = async () => {
-  return getShowsWithPage(shows_Category_URL + 27);
+  return getShowsWithPage(shows_Category_URL + 27, "show");
 };
 
 export const getDramaMovies = async () => {
-  return getMoviesWithPage(movies_Category_URL + 18);
+  return getMoviesWithPage(movies_Category_URL + 18, "movie");
 };
 
 export const getDramaShows = async () => {
-  return getShowsWithPage(shows_Category_URL + 18);
+  return getShowsWithPage(shows_Category_URL + 18, "show");
 };
 
 export const getAdventureMovies = async () => {
-  return getMoviesWithPage(movies_Category_URL + 12);
+  return getMoviesWithPage(movies_Category_URL + 12, "movie");
 };
 
 export const getAdventureShows = async () => {
-  return getShowsWithPage(shows_Category_URL + 10759);
+  return getShowsWithPage(shows_Category_URL + 10759, "show");
 };
 
 export const getComedyMovies = async () => {
-  return getMoviesWithPage(movies_Category_URL + 35);
+  return getMoviesWithPage(movies_Category_URL + 35, "movie");
 };
 
 export const getComedyShows = async () => {
-  return getShowsWithPage(shows_Category_URL + 35);
+  return getShowsWithPage(shows_Category_URL + 35, "show");
 };
 
 export const getTodayShows = async () => {
-  return getShows(airingToday_URL);
+  return getShows(airingToday_URL, "show");
 };
 export const getOnGoingShows = async () => {
-  return getShows(onGoingShows_URL);
+  return getShows(onGoingShows_URL, "show");
 };
 
 export const getPopularShow = async () => {
-  return getShows(popularShow_URL);
+  return getShows(popularShow_URL, "show");
 };
 
 export const getSearchResult = async (query) => {
@@ -265,6 +269,7 @@ export const getSearchResult = async (query) => {
         banner: movie.backdrop_path,
         poster: movie.poster_path,
         overview: movie.overview,
+        type: movie.name ? "show" : "movie",
       }));
   } catch (error) {
     handleApiError(error);
@@ -297,6 +302,7 @@ export const getTopRated = async () => {
         banner: movie.backdrop_path,
         poster: movie.poster_path,
         overview: movie.overview,
+        type: movie.name ? "show" : "movie",
       }));
   } catch (error) {
     handleApiError(error);
@@ -332,7 +338,7 @@ export const getShowsGenres = async () => {
     handleApiError(error);
   }
 };
-export const getFliteredMovies = async (genre) => {
+export const getFliteredMovies = async (genre, type) => {
   try {
     const allMovies = [];
     const totalPages = 9;
@@ -354,6 +360,7 @@ export const getFliteredMovies = async (genre) => {
           banner: movie.backdrop_path,
           poster: movie.poster_path,
           overview: movie.overview,
+          type: type,
         }));
 
       allMovies.push(...filteredMovies);
@@ -364,7 +371,7 @@ export const getFliteredMovies = async (genre) => {
     handleApiError(error);
   }
 };
-export const getFliteredShows = async (genre) => {
+export const getFliteredShows = async (genre, type) => {
   try {
     const allShows = [];
     const totalPages = 9;
@@ -386,6 +393,7 @@ export const getFliteredShows = async (genre) => {
           banner: show.backdrop_path,
           poster: show.poster_path,
           overview: show.overview,
+          type: type,
         }));
 
       allShows.push(...filteredShows);
@@ -396,12 +404,11 @@ export const getFliteredShows = async (genre) => {
     handleApiError(error);
   }
 };
-export const getMoviebyID = async (id, type) => {
+export const getMovieDetails = async (id) => {
   try {
-    const fetch = await axios.get(
-      `${BASE_URL}${type}/${id}?api_key=${API_KEY}`
-    );
+    const fetch = await axios.get(`${BASE_URL}movie/${id}?api_key=${API_KEY}`);
     const response = fetch.data;
+    console.log(response);
     const movieinfo = {
       title: response.original_title,
       tagline: response.tagline,
@@ -422,9 +429,41 @@ export const getMoviebyID = async (id, type) => {
       ),
       status: response.status,
       rating: response.vote_average,
+      vote : response.vote_count
     };
     return movieinfo;
   } catch (error) {
     handleApiError(error);
   }
 };
+// export const getShowDetails = async (id) => {
+//   try {
+//     const fetch = await axios.get(`${BASE_URL}tv/${id}?api_key=${API_KEY}`);
+//     const response = fetch.data;
+//     console.log(response);
+//     // const movieinfo = {
+//     //   title: response.original_title,
+//     //   tagline: response.tagline,
+//     //   genres: response.genres.map((genre) =>
+//     //     genre.name == "Science Fiction" ? "Sci-Fi" : genre.name
+//     //   ),
+//     //   banner: response.backdrop_path,
+//     //   poster: response.poster_path,
+//     //   budget: formatNumber(response.budget),
+//     //   ticket: response.homepage,
+//     //   overview: response.overview,
+//     //   productionCompanies: response.production_companies.map((c) => c.name),
+//     //   release: response.release_date,
+//     //   revenue: formatNumber(response.revenue),
+//     //   runtime: response.runtime,
+//     //   spoken_languages: response.spoken_languages.map(
+//     //     (lang) => lang.english_name
+//     //   ),
+//     //   status: response.status,
+//     //   rating: response.vote_average,
+//     // };
+//     // return movieinfo;
+//   } catch (error) {
+//     handleApiError(error);
+//   }
+// };
