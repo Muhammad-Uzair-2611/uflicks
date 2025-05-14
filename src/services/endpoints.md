@@ -21,7 +21,7 @@
 - **Upcoming Movies**  
   `GET https://api.themoviedb.org/3/movie/upcoming?api_key=355b13e494a808991526389d0adce37c`
 - **Movie Backdrops (Scene Images)**  
-  `GET https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=355b13e494a808991526389d0adce37c include_image_language=en,null`
+  `GET https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=355b13e494a808991526389d0adce37cinclude_image_language=en,null`
 
 ---
 
@@ -114,3 +114,5 @@
   `GET https://api.themoviedb.org/3/configuration?api_key=355b13e494a808991526389d0adce37c`
 
 ---
+https://image.tmdb.org/t/p/w780//hMSaqgMFZ6zyuMVaMB21Sr7MCHK.jpg
+

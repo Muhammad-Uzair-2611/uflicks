@@ -9,7 +9,7 @@ const MovieCard = (props) => {
   //*Functions
   const handleClick = () => {
     setIsAllowed(true);
-    setMovieId({ id: props.id, type: "movie" });
+    setMovieId({ id: props.id, type: "movies" });
     navigate(`/media/${props.id}`);
   };
 

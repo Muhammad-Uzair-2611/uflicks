@@ -19,6 +19,7 @@ const movies_Category_URL = `discover/movie?api_key=${API_KEY}&with_genres=`;
 const shows_Category_URL = `discover/tv?api_key=${API_KEY}&with_genres=`;
 const airingToday_URL = `tv/airing_today?api_key=${API_KEY}`;
 const onGoingShows_URL = `tv/on_the_air?api_key=${API_KEY}`;
+const backdropImages_URL = `/images?api_key=${API_KEY}`;
 
 //* Custom error handler
 const handleApiError = (error) => {
@@ -48,7 +49,7 @@ function formatNumber(num) {
   } else if (num >= 1_000) {
     return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
   } else {
-    return num.toString();
+    return num;
   }
 }
 
@@ -408,9 +409,8 @@ export const getMovieDetails = async (id) => {
   try {
     const fetch = await axios.get(`${BASE_URL}movie/${id}?api_key=${API_KEY}`);
     const response = fetch.data;
-
     const movieinfo = {
-      title: response.original_title,
+      title: response.title,
       tagline: response.tagline,
       genres: response.genres.map((genre) =>
         genre.name == "Science Fiction" ? "Sci-Fi" : genre.name
@@ -432,6 +432,21 @@ export const getMovieDetails = async (id) => {
       vote: response.vote_count,
     };
     return movieinfo;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const getBackDropImages = async (id) => {
+  try {
+    const fetch = await axios.get(
+      `${BASE_URL}movie/${id}${backdropImages_URL}`
+    );
+
+    const response = fetch.data.backdrops;
+    console.log(response);
+    return response.map((data) => ({
+      path: data.file_path,
+    }));
   } catch (error) {
     handleApiError(error);
   }

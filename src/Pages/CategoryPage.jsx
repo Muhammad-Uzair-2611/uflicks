@@ -135,7 +135,7 @@ const CategoryPage = () => {
   const handleClick = (e) => {
     setIsAllowed(true);
     setMovieId({ id: e.currentTarget.id, type: category });
-    navigate("/media");
+    navigate(`/media/${e.currentTarget.id}`);
   };
 
   //*Variants
