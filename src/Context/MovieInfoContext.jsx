@@ -11,6 +11,7 @@ export function MoviesInfoProvider({ children }) {
   //*Effects
   useEffect(() => {
     sessionStorage.setItem("movieID", JSON.stringify(movieId));
+    console.log(movieId.type)
   }, [movieId]);
   return (
     <movieInfoContext.Provider

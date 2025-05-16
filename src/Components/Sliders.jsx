@@ -331,6 +331,7 @@ const Sliders = () => {
                   poster={movie.poster}
                   title={movie.title}
                   id={movie.id}
+                  type={movie.type}
                 />
               </motion.div>
             ))}
@@ -403,6 +404,7 @@ const Sliders = () => {
                   poster={movie.poster}
                   title={movie.title}
                   id={movie.id}
+                  type={movie.type}
                 />
               </motion.div>
             ))}
@@ -475,6 +477,7 @@ const Sliders = () => {
                   poster={movie.poster}
                   title={movie.title}
                   id={movie.id}
+                  type={movie.type}
                 />
               </motion.div>
             ))}
@@ -547,6 +550,7 @@ const Sliders = () => {
                   poster={movie.poster}
                   title={movie.title}
                   id={movie.id}
+                  type={movie.type}
                 />
               </motion.div>
             ))}

@@ -15,7 +15,9 @@ const MediaDetails = () => {
   const { isAllowed, movieId: id, setIsAllowed } = useMovieInfo();
   const [mediaInfo, setMediaInfo] = useState({});
   const [sceneShots, setSceneShots] = useState([]);
+  const [showGallery, setShowGallery] = useState(false);
   const [ImageURL, setImageURL] = useState();
+  // usests
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -141,16 +143,11 @@ const MediaDetails = () => {
                   />
                 </a>
               </div>
-              {/* <a href={mediaInfo.ticket} target="_blank"> */}
-              <button
-                onClick={async () =>
-                  console.log(await getBackDropImages(id.id))
-                }
-                className="transition-all bg-amber-400 text-black py-2  font-semibold cursor-pointer px-5 rounded-sm hover:scale-102 translate-y-1 hover:translate-y-0 duration-400 hover:shadow-md  hover:shadow-amber-200"
-              >
-                Visit Official Site
-              </button>
-              {/* </a> */}
+              <a href={mediaInfo.ticket || "/notFound "} target="_blank">
+                <button className="transition-all bg-amber-400 text-black py-2  font-semibold cursor-pointer px-5 rounded-sm hover:scale-102 translate-y-1 hover:translate-y-0 duration-400 hover:shadow-md  hover:shadow-amber-200">
+                  Visit Official Site
+                </button>
+              </a>
             </div>
             <div className="Info mb-20">
               <div className="mb-8">
@@ -281,6 +278,9 @@ const MediaDetails = () => {
                   </div>
                 ) : index == 6 ? (
                   <div
+                    onClick={() => {
+                      setShowGallery(true);
+                    }}
                     key={index}
                     className="cursor-pointer w-fit h-fit  hover:scale-105 transition-transform duration-300 rounded-md overflow-hidden relative"
                   >
@@ -301,7 +301,13 @@ const MediaDetails = () => {
           </div>
         </div>
       </div>
-      <ImageGallery images={sceneShots} ImgSource={ImageURL} />
+      {showGallery && (
+        <ImageGallery
+          images={sceneShots}
+          ImgSource={ImageURL}
+          onClose={() => setShowGallery(false)}
+        />
+      )}
     </div>
   );
 };

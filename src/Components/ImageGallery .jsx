@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 
-const ImageGallery = ({ images, ImgSource }) => {
+const ImageGallery = ({ images, ImgSource, onClose }) => {
   const [current, setCurrent] = useState(0);
 
-
-
   if (!images || images.length === 0) return null;
-  //*FUnctions
+
+  //*Functions
   const goNext = () => {
     setCurrent((prev) => (prev + 1) % images.length);
   };
@@ -15,41 +16,61 @@ const ImageGallery = ({ images, ImgSource }) => {
     setCurrent((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  //*Effects
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   return (
-    <div className="absolute inset-0 w-full h-screen z-50 back flex items-center backdrop-blur-lg justify-center ">
-      <div className="relative  w-full h-1/2 bg-black flex items-center justify-center">
-        {/* Image */}
-        <img
-          src={`${ImgSource?.url}${ImgSource?.banner_sizes[1]}${images[current]}`}
-          alt={`slide-${current}`}
-          className="w-full max-h-[80vh] object-contain rounded-lg shadow-2xl mx-auto"
-          loading="lazy"
-        />
-        {/* Left Arrow */}
-        {images.length > 1 && (
-          <button
-            onClick={goPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 border-none text-white text-2xl rounded-full w-10 h-10 flex items-center justify-center cursor-pointer z-20 hover:bg-black/70 transition-colors"
-            aria-label="Previous image"
-          >
-            &#8592;
-          </button>
-        )}
-        {/* Right Arrow */}
-        {images.length > 1 && (
-          <button
-            onClick={goNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 border-none text-white text-2xl rounded-full w-10 h-10 flex items-center justify-center cursor-pointer z-20 hover:bg-black/70 transition-colors"
-            aria-label="Next image"
-          >
-            &#8594;
-          </button>
-        )}
-        {/* Image Counter */}
-        <div className="absolute top-4 right-8 text-yellow-400 bg-black/70 px-3 py-1 rounded-full font-bold text-base">
+    <div className=" py-3 h-screen backdrop-blur-xl w-full absolute inset-0 z-100 flex flex-col justify-between">
+      <div className="header flex justify-between items-center px-3">
+        <button
+          onClick={onClose}
+          className="bg-black/50 hover:bg-black/90 rounded-md py-1 px-3 cursor-pointer z-10 flex items-center text-lg tracking-wide transition-colors"
+        >
+          <RxCross2 className="text-xl" />
+          <span className="pt-1">Close</span>
+        </button>
+        <div className="bg-black/50 rounded-2xl py-1 px-3 text-center text-amber-400">
           {current + 1} of {images.length}
         </div>
       </div>
+      <div className="bg-black/40 px-2 w-full h-60 flex items-center justify-between">
+        {images.length > 1 && (
+          <button
+            onClick={goPrev}
+            className="bg-black/50 border-none text-white text-2xl rounded-full w-10 h-10 flex items-center justify-center cursor-pointer z-20 hover:bg-black/70 transition-colors rotate-z-180"
+            aria-label="Next image"
+          >
+            <FaArrowRight />
+          </button>
+        )}
+        <img
+          src={`${ImgSource?.url}${ImgSource?.banner_sizes[1]}${images[current]}`}
+          onError={(e) => {
+            e.target.src = "./Default_banner.png";
+          }}
+          alt={`slide-${current}`}
+          className="w-full max-h-[70vh] object-contain sm:rounded-lg rounded-none shadow-2xl "
+          loading="lazy"
+        />
+        {images.length > 1 && (
+          <button
+            onClick={goNext}
+            className="bg-black/50 border-none text-white text-2xl rounded-full w-10 h-10 flex items-center justify-center cursor-pointer z-20 hover:bg-black/70 transition-colors"
+            aria-label="Next image"
+          >
+            <FaArrowRight />
+          </button>
+        )}
+      </div>
+
+      <div className="bg-none w-full h-20 "></div>
     </div>
   );
 };

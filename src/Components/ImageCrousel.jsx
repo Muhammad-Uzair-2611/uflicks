@@ -32,16 +32,11 @@ const SimpleCarousel = () => {
     intervalRef.current = null;
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
     setIsAllowed(true);
-    const mediaType =
-      location.pathname === "/"
-        ? "movie"
-        : location.pathname === "/movies"
-        ? "movie"
-        : "show";
+    const mediaType = e.currentTarget.dataset.type;
     setMovieId({ id: topRated[currentIndex].id, type: mediaType });
-    navigate(`/media/${topRated[currentIndex].id}`);
+    if (location) navigate(`/media/${topRated[currentIndex].id}`);
   };
 
   //*Effects
@@ -59,6 +54,7 @@ const SimpleCarousel = () => {
         setHeading("Shows");
       }
       const [imageURL, topRated] = await Promise.all([getImageURL(), promise]);
+
       setImageURL(imageURL);
       setTopRated(topRated);
     }
@@ -136,6 +132,7 @@ const SimpleCarousel = () => {
       {topRated[currentIndex] && (
         <div
           id={topRated[currentIndex].id}
+          data-type={topRated[currentIndex].type}
           className={`md:absolute z-10 md:flex lg:gap-x-4 md:gap-x-3 xl:top-1/3 xl:left-30 
             md:top-1/4 md:left-10 text-white transition-all duration-500 opacity-100 sm:translate-y-4 w-full pb-3 ${
               isHover

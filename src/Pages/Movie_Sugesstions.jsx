@@ -57,7 +57,7 @@ const Movie_Sugesstions = () => {
         setLoading(true);
         setError(null);
         let [Path, type] = location.pathname.split("/").slice(1);
-        console.log(type)
+        console.log(type);
         setCategory(Path);
         setType(type);
 
@@ -180,8 +180,9 @@ const Movie_Sugesstions = () => {
     setIsAllowed(true);
     setSearchItem("");
     setIsFocus(false);
-    setMovieId({ id: e.currentTarget.id, type: type });
-    console.log(`/media/${e.currentTarget.id}`);
+    const mediaType = e.currentTarget.dataset.type;
+    setMovieId({ id: e.currentTarget.id, type: mediaType });
+
     navigate(`/media/${e.currentTarget.id}`);
   };
 

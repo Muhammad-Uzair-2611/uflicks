@@ -11,10 +11,10 @@ const PageNotFound = () => {
         Oops! The page you're looking for doesn't exist.
       </p>
       <Link
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/")}
         className="px-4 py-2 sm:px-6 sm:py-3 bg-amber text-black rounded-lg shadow hover:scale-102 transition font-semibold"
       >
-        Go Back
+        Go Home
       </Link>
     </div>
   );
