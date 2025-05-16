@@ -443,10 +443,8 @@ export const getBackDropImages = async (id) => {
     );
 
     const response = fetch.data.backdrops;
-    console.log(response);
-    return response.map((data) => ({
-      path: data.file_path,
-    }));
+
+    return response.map((data) => data.file_path);
   } catch (error) {
     handleApiError(error);
   }

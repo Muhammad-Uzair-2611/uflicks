@@ -8,6 +8,7 @@ import {
 import { useMovieInfo } from "../Context/MovieInfoContext";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import ImageGallery from "../Components/ImageGallery ";
 
 const MediaDetails = () => {
   //* States
@@ -54,6 +55,7 @@ const MediaDetails = () => {
           getBackDropImages(id.id),
         ]);
         const shuffledArray = shuffleArray(sceneShots);
+
         setSceneShots(shuffledArray);
         setImageURL(imageURl);
         setMediaInfo(details);
@@ -110,11 +112,7 @@ const MediaDetails = () => {
       <div className="relative">
         <div className=" h-fit relative ">
           <div className="backImage w-full h-[95%] absolute -z-10 ">
-            <div
-              className={`absolute z-15 bg-black/40 inset-0 `}
-            >
-              {" "}
-            </div>
+            <div className={`absolute z-15 bg-black/40 inset-0 `}> </div>
             <img
               className="w-full h-full "
               src={`${ImageURL?.url}${ImageURL?.banner_sizes[3]}${mediaInfo.banner}`}
@@ -269,7 +267,7 @@ const MediaDetails = () => {
           </div>
           <div className="w-full h-full">
             <div className="flex shrink-0 mb-10 flex-wrap gap-x-4 gap-y-5 w-full items-center px-5 h-fit">
-              {sceneShots.map((img, index) =>
+              {sceneShots.map((path, index) =>
                 index <= 5 ? (
                   <div
                     key={index}
@@ -277,7 +275,7 @@ const MediaDetails = () => {
                   >
                     <img
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      src={`${ImageURL?.url}${ImageURL?.banner_sizes[0]}${img.path}`}
+                      src={`${ImageURL?.url}${ImageURL?.banner_sizes[0]}${path}`}
                       alt={`Photo-${index}`}
                     />
                   </div>
@@ -291,7 +289,7 @@ const MediaDetails = () => {
                     </div>
                     <img
                       className="w-full h-full object-cover"
-                      src={`${ImageURL?.url}${ImageURL?.banner_sizes[0]}${img.path}`}
+                      src={`${ImageURL?.url}${ImageURL?.banner_sizes[0]}${path}`}
                       alt={`Photo-${index}`}
                     />
                   </div>
@@ -303,7 +301,7 @@ const MediaDetails = () => {
           </div>
         </div>
       </div>
-      <div className="w-full h-screen border absolute z-10 inset-0"></div>
+      <ImageGallery images={sceneShots} ImgSource={ImageURL} />
     </div>
   );
 };
