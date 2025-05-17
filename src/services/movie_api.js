@@ -436,10 +436,40 @@ export const getMovieDetails = async (id) => {
     handleApiError(error);
   }
 };
-export const getBackDropImages = async (id) => {
+export const getShowDetails = async (id) => {
+  const fetch = await axios.get(`${BASE_URL}tv/${id}?api_key=${API_KEY}`);
+  const response = fetch.data;
+  const showInfo = {
+    title: response.name,
+    tagline: response.tagline,
+    genres: response.genres.map((genre) =>
+      genre.name == "Science Fiction" ? "Sci-Fi" : genre.name
+    ),
+    banner: response.backdrop_path,
+    poster: response.poster_path,
+    ticket: response.homepage,
+    overview: response.overview,
+    productionCompanies: response.production_companies.map((c) => c.name),
+    release: response.first_air_date,
+    lastRelease: response.last_air_date,
+    nextEpisode: response.next_episode_to_air,
+    numofEpisode: response.number_of_episodes,
+    totalSeason: response.seasons,
+    spoken_languages: response.spoken_languages.map(
+      (lang) => lang.english_name
+    ),
+    status: response.status,
+    type: response.type,
+    rating: response.vote_average,
+    vote: response.vote_count,
+  };
+  console.log(showInfo);
+  return showInfo;
+};
+export const getBackDropImages = async (id, type) => {
   try {
     const fetch = await axios.get(
-      `${BASE_URL}movie/${id}${backdropImages_URL}`
+      `${BASE_URL}${type}/${id}${backdropImages_URL}`
     );
 
     const response = fetch.data.backdrops;

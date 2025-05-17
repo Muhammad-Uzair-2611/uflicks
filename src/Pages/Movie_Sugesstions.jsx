@@ -44,9 +44,9 @@ const Movie_Sugesstions = () => {
 
   async function fetchFilteredContent(path, genreId) {
     if (path === "/search/shows") {
-      return await getFliteredShows(genreId || DEFAULT_SHOW_GENRES);
+      return await getFliteredShows(genreId || DEFAULT_SHOW_GENRES, "show");
     }
-    return await getFliteredMovies(genreId || DEFAULT_MOVIE_GENRES);
+    return await getFliteredMovies(genreId || DEFAULT_MOVIE_GENRES, "movie");
   }
 
   //* Effects

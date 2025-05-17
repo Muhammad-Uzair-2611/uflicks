@@ -134,7 +134,8 @@ const CategoryPage = () => {
   //*Functions
   const handleClick = (e) => {
     setIsAllowed(true);
-    setMovieId({ id: e.currentTarget.id, type: category });
+    const mediaType = e.currentTarget.dataset.type;
+    setMovieId({ id: e.currentTarget.id, type: mediaType });
     navigate(`/media/${e.currentTarget.id}`);
   };
 
@@ -263,6 +264,7 @@ const CategoryPage = () => {
                   <motion.div
                     key={movie.id}
                     id={movie.id}
+                    data-type={movie.type}
                     ref={
                       index === visibleCardCount - 1
                         ? lastRenderedCard
